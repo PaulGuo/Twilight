@@ -1,0 +1,16 @@
+*.py[cod]
+
+# PyBuilder
+target/
+/video.mp4
+/timeline.json
+/ref
+/out
+/.idea
+*.gz
+
+ios_video.mp4
+/*.mp4
+/*.json
+/*.jpg
+/.vscode

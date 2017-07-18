@@ -4,7 +4,7 @@
 
 #### Build Setup
 
-``` bash
+```bash
 # install dependencies
 yarn
 
@@ -13,11 +13,14 @@ yarn run dev
 
 # build electron application for production
 yarn run build
-
-# lint all JS/Vue component files in `src/`
-npm run lint
 ```
 
----
+#### Build Process
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+```
+src
+↓ webpack
+dist
+↓ electron-builder
+app
+```

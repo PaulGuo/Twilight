@@ -4,15 +4,15 @@
     "author": "badkaikai@gmail.com",
     "description": "Visual Metrics GUI",
     "license": null,
-    "main": "./dist/electron/main.js",
+    "main": "./dist/main.js",
     "scripts": {
         "build": "node .electron-vue/build.js && electron-builder",
         "build:dir": "node .electron-vue/build.js && electron-builder --dir",
         "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src test",
         "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src test",
         "pack": "npm run pack:main && npm run pack:renderer",
-        "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
-        "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
+        "pack:main": "cross-env NODE_ENV=production webpack --config .electron-vue/webpack.main.config.js",
+        "pack:renderer": "cross-env NODE_ENV=production webpack --config .electron-vue/webpack.renderer.config.js",
         "dev": "node .electron-vue/dev-runner.js"
     },
     "build": {
@@ -22,7 +22,7 @@
             "output": "build"
         },
         "files": [
-            "dist/electron/**/*"
+            "dist/**/*"
         ],
         "dmg": {
             "contents": [{
@@ -39,13 +39,7 @@
             ]
         },
         "mac": {
-            "icon": "build/icons/icon.icns"
-        },
-        "win": {
-            "icon": "build/icons/icon.ico"
-        },
-        "linux": {
-            "icon": "build/icons"
+            "identity": null
         }
     },
     "dependencies": {

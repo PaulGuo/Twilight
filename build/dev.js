@@ -89,12 +89,6 @@ function startMain() {
 
         const compiler = webpack(mainConfig);
 
-        compiler.plugin('watch-run', (compilation, done) => {
-            logStats('Main', chalk.white.bold('compiling...'));
-            hotMiddleware.publish({ action: 'compiling' });
-            done();
-        });
-
         compiler.watch({}, (err, stats) => {
             if (err) {
                 console.log(err);

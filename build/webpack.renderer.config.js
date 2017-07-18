@@ -3,24 +3,18 @@
 process.env.BABEL_ENV = 'renderer';
 
 const path = require('path');
-const { dependencies } = require('../package.json');
 const webpack = require('webpack');
-
+const webpackMerge = require('webpack-merge');
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { dependencies } = require('../package.json');
 
-/**
- * List of node_modules to include in webpack bundle
- *
- * Required for specific packages like Vue UI libraries
- * that provide pure *.vue files that need compiling
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
- */
+const env = process.env.NODE_ENV || 'development';
+
 let whiteListedModules = ['vue'];
 
-let rendererConfig = {
-    devtool: '#eval-source-map',
+const common = {
+    target: 'electron-renderer',
     entry: {
         renderer: path.join(__dirname, '../src/renderer/main.js')
     },
@@ -44,10 +38,7 @@ let rendererConfig = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader'
-                })
+                use: ['style-loader', 'css-loader']
             },
             {
                 test: /\.html$/,
@@ -67,10 +58,7 @@ let rendererConfig = {
                 use: {
                     loader: 'vue-loader',
                     options: {
-                        extractCSS: process.env.NODE_ENV === 'production',
                         loaders: {
-                            sass:
-                                'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
                             scss: 'vue-style-loader!css-loader!sass-loader'
                         }
                     }
@@ -103,7 +91,10 @@ let rendererConfig = {
         __filename: process.env.NODE_ENV !== 'production'
     },
     plugins: [
-        new ExtractTextPlugin('styles.css'),
+        new webpack.ProgressPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(env)
+        }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             template: path.resolve(__dirname, '../src/index.ejs'),
@@ -116,9 +107,7 @@ let rendererConfig = {
                 process.env.NODE_ENV !== 'production'
                     ? path.resolve(__dirname, '../node_modules')
                     : false
-        }),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        })
     ],
     output: {
         filename: '[name].js',
@@ -138,25 +127,41 @@ let rendererConfig = {
     },
     performance: {
         hints: false
-    },
-    target: 'electron-renderer'
+    }
 };
-
-if (process.env.NODE_ENV === 'production') {
-    rendererConfig.devtool = '';
-
-    rendererConfig.plugins.push(
+const dev = webpackMerge(common, {
+    cache: true,
+    devtool: 'eval-source-map',
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.NamedModulesPlugin()
+    ]
+});
+const prod = webpackMerge(common, {
+    plugins: [
         new BabiliWebpackPlugin({
             removeConsole: true,
             removeDebugger: true
         }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"'
-        }),
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.LoaderOptionsPlugin({
-            minimize: true
+            minimize: true,
+            debug: false
         })
-    );
+    ],
+    bail: true
+});
+
+let conf;
+switch (env) {
+    case 'production':
+        conf = prod;
+        break;
+    case 'development':
+        conf = dev;
+        break;
 }
 
-module.exports = rendererConfig;
+module.exports = conf;

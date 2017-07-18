@@ -3,17 +3,24 @@
 process.env.BABEL_ENV = 'main';
 
 const path = require('path');
-const { dependencies } = require('../package.json');
 const webpack = require('webpack');
-
+const webpackMerge = require('webpack-merge');
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
+const { dependencies } = require('../package.json');
 
-let mainConfig = {
-    devtool: '#eval-source-map',
+const env = process.env.NODE_ENV || 'development';
+
+const common = {
+    target: 'electron-main',
     entry: {
         main: path.join(__dirname, '../src/main/index.js')
     },
     externals: [...Object.keys(dependencies || {})],
+    output: {
+        filename: '[name].js',
+        libraryTarget: 'commonjs2',
+        path: path.join(__dirname, '../dist')
+    },
     module: {
         rules: [
             {
@@ -42,35 +49,56 @@ let mainConfig = {
         __dirname: process.env.NODE_ENV !== 'production',
         __filename: process.env.NODE_ENV !== 'production'
     },
-    output: {
-        filename: '[name].js',
-        libraryTarget: 'commonjs2',
-        path: path.join(__dirname, '../dist')
-    },
-    plugins: [new webpack.NoEmitOnErrorsPlugin()],
     resolve: {
         extensions: ['.js', '.json', '.node']
     },
+    plugins: [
+        new webpack.ProgressPlugin(),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(env)
+        })
+    ],
     stats: {
         children: false,
         chunks: false
     },
     performance: {
         hints: false
-    },
-    target: 'electron-main'
+    }
 };
-
-if (process.env.NODE_ENV === 'production') {
-    mainConfig.plugins.push(
+const dev = webpackMerge(common, {
+    cache: true,
+    devtool: 'eval-source-map',
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.NamedModulesPlugin()
+    ]
+});
+const prod = webpackMerge(common, {
+    plugins: [
         new BabiliWebpackPlugin({
             removeConsole: true,
             removeDebugger: true
         }),
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': '"production"'
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.AggressiveMergingPlugin(),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false
         })
-    );
+    ],
+    bail: true
+});
+
+let conf;
+switch (env) {
+    case 'production':
+        conf = prod;
+        break;
+    case 'development':
+        conf = dev;
+        break;
 }
 
-module.exports = mainConfig;
+module.exports = conf;

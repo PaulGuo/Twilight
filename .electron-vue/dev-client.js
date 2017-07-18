@@ -1,19 +1,19 @@
-const hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true')
+const hotClient = require('webpack-hot-middleware/client?noInfo=true&reload=true');
 
 hotClient.subscribe(event => {
-  /**
+    /**
    * Reload browser when HTMLWebpackPlugin emits a new index.html
    */
-  if (event.action === 'reload') {
-    window.location.reload()
-  }
+    if (event.action === 'reload') {
+        window.location.reload();
+    }
 
-  /**
+    /**
    * Notify `mainWindow` when `main` process is compiling,
    * giving notice for an expected reload of the `electron` process
    */
-  if (event.action === 'compiling') {
-    document.body.innerHTML += `
+    if (event.action === 'compiling') {
+        document.body.innerHTML += `
       <style>
         #dev-client {
           background: #4fc08d;
@@ -31,6 +31,6 @@ hotClient.subscribe(event => {
       <div id="dev-client">
         Compiling Main Process...
       </div>
-    `
-  }
-})
+    `;
+    }
+});

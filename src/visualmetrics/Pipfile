@@ -1,0 +1,7 @@
+[[source]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+verify_ssl = true
+
+[packages]
+Pillow = "*"
+pyssim = "*"

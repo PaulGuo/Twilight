@@ -1,15 +1,42 @@
+<style>
+    *,
+    *::before,
+    *::after {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: inherit;
+        font-style: inherit;
+        font-weight: inherit;
+        line-height: inherit;
+        box-sizing: border-box;
+        background-repeat: no-repeat;
+    }
+
+    html {
+        height: 100%;
+    }
+
+    body {
+        min-height: 100%;
+        line-height: 1;
+        font-size: 100%;
+        font-style: normal;
+        font-weight: normal;
+        font-family: 'Helvetica Neue', 'Roboto', 'PingFang SC', 'Noto Sans CJK SC', sans-serif;
+        text-rendering: optimizeLegibility;
+    }
+</style>
+
 <template>
-  <div id="app">
+<div id="app">
     <router-view></router-view>
-  </div>
+</div>
 </template>
 
 <script>
-  export default {
+export default {
     name: 'twilight'
-  }
+};
 </script>
-
-<style>
-  /* CSS */
-</style>

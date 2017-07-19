@@ -1,22 +1,26 @@
 <template>
     <div id="wrapper">
-      <p>choose</p>
-  </div>
+        <p>ha</p>
+    </div>
 </template>
 
 <script>
 export default {
     name: 'choose-frames',
-    components: {},
+    data() {
+        return {
+            images: [],
+        };
+    },
     methods: {
-        open(link) {
-            this.$electron.shell.openExternal(link);
-        }
-    }
+    },
+    mounted() {
+        const images = this.$state.get('images');
+        console.log(images);
+        this.images = images;
+    },
 };
 </script>
 
 <style>
-
-
 </style>

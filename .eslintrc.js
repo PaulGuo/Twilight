@@ -1,9 +1,11 @@
+const process = require('process');
+
 module.exports = {
     root: true,
     parser: 'babel-eslint',
     parserOptions: {
         ecmaVersion: 2017,
-        sourceType: 'module',
+        sourceType: 'module'
     },
     env: {
         browser: true,
@@ -13,16 +15,16 @@ module.exports = {
     extends: 'eslint:recommended',
     plugins: ['html'],
     rules: {
-        'no-debugger': 1,
-        'no-console': 1,
+        'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
         'no-constant-condition': [1, { checkLoops: false }],
-        'no-unreachable': 1,
+        'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
+        'no-unreachable': process.env.NODE_ENV === 'production' ? 1 : 0,
         'no-unused-vars': [1, { args: 'none' }],
-        semi: 1,
         quotes: [
             1,
             'single',
             { avoidEscape: true, allowTemplateLiterals: true }
-        ]
+        ],
+        semi: 1
     }
 };

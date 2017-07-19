@@ -10,12 +10,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const env = process.env.NODE_ENV || 'development';
 
-let whiteListedModules = ['vue'];
-
 const common = {
     target: 'electron-renderer',
     entry: {
         renderer: path.join(__dirname, '../src/renderer/index.js')
+    },
+    output: {
+        filename: '[name].js',
+        libraryTarget: 'commonjs2',
+        path: path.join(__dirname, '../dist')
     },
     module: {
         rules: [
@@ -97,11 +100,6 @@ const common = {
             }
         })
     ],
-    output: {
-        filename: '[name].js',
-        libraryTarget: 'commonjs2',
-        path: path.join(__dirname, '../dist')
-    },
     resolve: {
         alias: {
             '@renderer': path.join(__dirname, '../src/renderer')
@@ -110,13 +108,23 @@ const common = {
     }
 };
 const dev = webpackMerge(common, {
-    cache: true,
     devtool: 'eval-source-map',
+    cache: true,
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.NamedModulesPlugin()
-    ]
+        new webpack.NamedModulesPlugin(),
+    ],
+    devServer: {
+        host: 'localhost',
+        port: 9080,
+        inline: true,
+        hot: true,
+        stats: {
+            children: false,
+            chunks: false,
+        },
+    },
 });
 const prod = webpackMerge(common, {
     plugins: [

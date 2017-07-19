@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { spawn } from 'child_process';
-import { ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import logger from 'electron-log';
 
 /**
@@ -24,6 +24,18 @@ const visualMetricPath = path.resolve(
     '../third-party/visualmetrics/visualmetrics.py'
 );
 const tmpdir = path.join(os.tmpdir(), 'visualmetric');
+
+app.on('ready', () => {
+    fs.mkdir(tmpdir, err => {
+        if (err) logger.error(err);
+    });
+});
+
+app.on('quit', () => {
+    fs.unlink(tmpdir, err => {
+        if (err) logger.error(err);
+    });
+});
 
 // communicate with visualmetric
 class VisualMetricTask {

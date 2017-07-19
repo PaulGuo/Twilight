@@ -7,7 +7,6 @@ const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { dependencies } = require('../package.json');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -18,11 +17,6 @@ const common = {
     entry: {
         renderer: path.join(__dirname, '../src/renderer/index.js')
     },
-    externals: [
-        ...Object.keys(dependencies || {}).filter(
-            d => !whiteListedModules.includes(d)
-        )
-    ],
     module: {
         rules: [
             {
@@ -94,17 +88,13 @@ const common = {
             'process.env.NODE_ENV': JSON.stringify(env)
         }),
         new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: path.resolve(__dirname, '../src/index.ejs'),
+            filename: 'renderer.html',
+            template: path.resolve(__dirname, '../src/renderer/index.html'),
             minify: {
                 collapseWhitespace: true,
                 removeAttributeQuotes: true,
                 removeComments: true
-            },
-            nodeModules:
-                process.env.NODE_ENV !== 'production'
-                    ? path.resolve(__dirname, '../node_modules')
-                    : false
+            }
         })
     ],
     output: {

@@ -44,10 +44,6 @@ function logStats(proc, data) {
 
 function startRenderer() {
     return new Promise((resolve, reject) => {
-        rendererConfig.entry.renderer = [
-            path.join(__dirname, 'dev-client')
-        ].concat(rendererConfig.entry.renderer);
-
         const compiler = webpack(rendererConfig);
         hotMiddleware = webpackHotMiddleware(compiler, {
             log: false,
@@ -82,10 +78,6 @@ function startRenderer() {
 
 function startMain() {
     return new Promise((resolve, reject) => {
-        mainConfig.entry.main = [
-            path.join(__dirname, '../src/main/index.dev.js')
-        ].concat(mainConfig.entry.main);
-
         const compiler = webpack(mainConfig);
 
         compiler.watch({}, (err, stats) => {
@@ -115,7 +107,7 @@ function startMain() {
 function startElectron() {
     electronProcess = spawn(electron, [
         '--inspect=5858',
-        path.join(__dirname, '../dist/electron/main.js')
+        path.join(__dirname, '../dist/main.js')
     ]);
 
     electronProcess.stdout.on('data', data => {

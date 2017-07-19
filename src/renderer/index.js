@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import VueElectron from 'vue-electron';
 
-import './reset.css';
+import './base.css';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';

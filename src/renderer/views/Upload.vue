@@ -1,25 +1,26 @@
-<style>
-    #upload .video-uploader .el-upload {
-        border: 3px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
+<style lang="scss">
+    #upload {
+        .video-uploader .el-upload {
+            border: 3px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
 
-    #upload .video-uploader .el-upload:hover {
-        border-color: #20a0ff;
-    }
+        .video-uploader .el-upload:hover {
+            border-color: #20a0ff;
+        }
 
-    #upload .video-uploader-icon {
-        font-size: 28px;
-        color: #8c939d;
-        width: 378px;
-        height: 278px;
-        line-height: 278px;
-        text-align: center;
+        .video-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 378px;
+            height: 278px;
+            line-height: 278px;
+            text-align: center;
+        }
     }
-
 </style>
 
 <style scoped>
@@ -47,7 +48,6 @@
         text-align: center;
         margin-top: 14px;
     }
-
 </style>
 
 <template>
@@ -95,5 +95,4 @@ export default {
         }
     }
 };
-
 </script>

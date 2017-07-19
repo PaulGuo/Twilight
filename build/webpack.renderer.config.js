@@ -16,7 +16,7 @@ let whiteListedModules = ['vue'];
 const common = {
     target: 'electron-renderer',
     entry: {
-        renderer: path.join(__dirname, '../src/renderer/main.js')
+        renderer: path.join(__dirname, '../src/renderer/index.js')
     },
     externals: [
         ...Object.keys(dependencies || {}).filter(

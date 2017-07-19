@@ -1,25 +1,26 @@
 import Vue from 'vue';
 
-import App from './app';
-import router from './router';
-import store from './store';
+import VueElectron from 'vue-electron';
+
+import './reset.css';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-default/index.css';
 
-import vueElectron from 'vue-electron';
+import router from './router.js';
+import State from './state.js';
 
 Vue.config.productionTip = false;
 
-Vue.use(vueElectron);
+Vue.use(VueElectron);
 Vue.use(ElementUI);
+Vue.use(State);
 
 const app = new Vue({
-    components: { App },
     router,
-    store,
     render(h) {
-        return h('App');
+        return h('router-view');
     }
 });
+
 app.$mount('#app');

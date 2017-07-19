@@ -1,7 +1,7 @@
 'use strict';
 
 import { app, BrowserWindow } from 'electron';
-import startListen from './virtual-metrics.js';
+import initVirtualMetrics from './virtual-metrics.js';
 
 const winURL =
     process.env.NODE_ENV === 'development'
@@ -23,5 +23,5 @@ function createWindow() {
 
 app.on('ready', () => {
     createWindow();
-    startListen();
+    initVirtualMetrics();
 });

@@ -87,7 +87,7 @@
                 this.file = query.file;
                 this.processVideo();
             } else {
-                // TODO: error tip, goBack
+                // TODO: error tip
                 this.goBack();
             }
         }

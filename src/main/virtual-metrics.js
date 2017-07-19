@@ -123,7 +123,7 @@ class VirtualMetricTask {
 }
 
 // communicate with renderer
-const startListen = () => {
+const initVirtualMetrics = () => {
     let ID = 0;
     const taskMap = {};
 
@@ -160,4 +160,4 @@ const startListen = () => {
     });
 };
 
-export default startListen;
+export default initVirtualMetrics;

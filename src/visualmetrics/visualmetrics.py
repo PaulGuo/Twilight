@@ -1281,17 +1281,23 @@ def calculate_visual_metrics(histograms_file, start, end, perceptual, dirs):
     if histograms is not None and len(histograms) > 0:
         progress = calculate_visual_progress(histograms)
         if len(histograms) > 1:
+            speed_index = calculate_speed_index(progress)
             metrics = [
                 {'name': 'First Visual Change',
                     'value': histograms[1]['time']},
                 {'name': 'Last Visual Change',
                     'value': histograms[-1]['time']},
                 {'name': 'Speed Index',
-                 'value': calculate_speed_index(progress)}
+                 'value': speed_index['value']},
+                {'name': 'Speed Index Chart',
+                 'value': speed_index['gradual']}
             ]
             if perceptual:
+                perceptual_speed_index = calculate_perceptual_speed_index(progress, dirs)
                 metrics.append({'name': 'Perceptual Speed Index',
-                                'value': calculate_perceptual_speed_index(progress, dirs)})
+                                'value': perceptual_speed_index['value']})
+                metrics.append({'name': 'Perceptual Speed Index Chart',
+                                'value': perceptual_speed_index['gradual']})
         else:
             metrics = [
                 {'name': 'First Visual Change',
@@ -1390,12 +1396,17 @@ def calculate_speed_index(progress):
     si = 0
     last_ms = progress[0]['time']
     last_progress = progress[0]['progress']
+    si_gradual = []
+    result = dict()
     for p in progress:
         elapsed = p['time'] - last_ms
         si += elapsed * (1.0 - last_progress)
         last_ms = p['time']
         last_progress = p['progress'] / 100.0
-    return int(si)
+        si_gradual.append([p['time'], p['progress']])
+    result['value'] = int(si)
+    result['gradual'] = si_gradual
+    return result
 
 
 def calculate_perceptual_speed_index(progress, directory):
@@ -1413,6 +1424,8 @@ def calculate_perceptual_speed_index(progress, directory):
     # Full Path of the Target Frame
     logging.debug("Target image for perSI is %s" % target_frame)
     ssim = ssim_1
+    psi_gradual = []
+    result = dict()
     for p in progress[1:]:
         elapsed = p['time'] - last_ms
         # print '*******elapsed %f'%elapsed
@@ -1424,7 +1437,10 @@ def calculate_perceptual_speed_index(progress, directory):
         ssim = compute_ssim(current_frame, target_frame)
         gc.collect()
         last_ms = p['time']
-    return int(per_si)
+        psi_gradual.append([p['time'], ssim])
+    result['value'] = int(per_si)
+    result['gradual'] = psi_gradual
+    return result
 
 
 ##########################################################################

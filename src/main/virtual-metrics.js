@@ -1,14 +1,9 @@
-import { ipcMain } from 'electron';
-import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-
-/**
- *  TODO:
- *      - visualmetrics log
- *      - cleanup after task done
- */
+import { spawn } from 'child_process';
+import { ipcMain } from 'electron';
+import logger from 'electron-log';
 
 /**
  *  event name format
@@ -39,7 +34,9 @@ class VirtualMetricTask {
     //      - failure
     // - stopped <- stop waiting/running
 
-    constructor(videoFile) {
+    constructor(videoFile, id) {
+        this.id = id;
+        this.tmpdir = path.join(tmpdir, `${id}-${Date.now()}`);
         this.file = videoFile;
         this.childProcess = null;
         this.status = 'waiting';
@@ -52,7 +49,7 @@ class VirtualMetricTask {
                 '--video',
                 this.file,
                 '--dir',
-                tmpdir,
+                this.tmpdir,
                 '--quality',
                 '75',
                 '--orange',
@@ -61,17 +58,19 @@ class VirtualMetricTask {
             ]);
 
             this.childProcess.on('error', err => {
+                logger.error(err);
                 reject(err);
             });
 
             this.childProcess.on('close', (code, signal) => {
                 if (code === 0) {
-                    fs.readdir(tmpdir, (err, files) => {
+                    fs.readdir(this.tmpdir, (err, files) => {
                         if (err) {
+                            logger.error(err);
                             reject(err);
                         } else {
                             const imageList = files.map(file =>
-                                path.join(tmpdir, file)
+                                path.join(this.tmpdir, file)
                             );
                             resolve(imageList);
                         }
@@ -96,6 +95,7 @@ class VirtualMetricTask {
         });
         p.catch(() => {
             this.status = 'failure';
+            this.cleanup();
         });
         return p;
     }
@@ -110,6 +110,15 @@ class VirtualMetricTask {
                 this.status = 'stopped';
                 break;
         }
+        this.cleanup();
+    }
+
+    cleanup() {
+        fs.unlink(this.tmpdir, (err) => {
+            if (err) {
+                logger.error(err);
+            }
+        });
     }
 }
 
@@ -123,7 +132,7 @@ const startListen = () => {
         ID++;
 
         const taskId = ID;
-        const task = new VirtualMetricTask(videoFile);
+        const task = new VirtualMetricTask(videoFile, taskId);
         event.sender.send('renderer:virtual-metrics:analyse-started', taskId);
 
         const pTask = task.start();

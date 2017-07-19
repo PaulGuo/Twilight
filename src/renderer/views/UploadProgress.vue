@@ -45,22 +45,22 @@ export default {
         stopAndBack() {
             const ipc = this.$electron.ipcRenderer;
 
-            ipc.on('renderer:virtual-metrics:analyse-stopped', (event, tid) => {
+            ipc.on('renderer:visual-metrics:analyse-stopped', (event, tid) => {
                 this.goBack();
             });
 
-            ipc.send('main:virtual-metrics:stop-analyse', this.taskId);
+            ipc.send('main:visual-metrics:stop-analyse', this.taskId);
         },
 
         processVideo() {
             const ipc = this.$electron.ipcRenderer;
 
-            ipc.on('renderer:virtual-metrics:analyse-started', (event, tid) => {
+            ipc.on('renderer:visual-metrics:analyse-started', (event, tid) => {
                 console.log(tid);
             });
 
             ipc.on(
-                'renderer:virtual-metrics:analyse-success',
+                'renderer:visual-metrics:analyse-success',
                 (event, tid, images) => {
                     this.$state.set('images', images);
                     console.log(images);
@@ -71,14 +71,14 @@ export default {
             );
 
             ipc.on(
-                'renderer:virtual-metrics:analyse-failure',
+                'renderer:visual-metrics:analyse-failure',
                 (event, tid, err) => {
                     console.log(err);
                     this.goBack();
                 }
             );
 
-            ipc.send('main:virtual-metrics:start-analyse', this.file);
+            ipc.send('main:visual-metrics:start-analyse', this.file);
         }
     },
 

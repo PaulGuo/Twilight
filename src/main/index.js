@@ -1,12 +1,12 @@
 'use strict';
 
 import { app, BrowserWindow } from 'electron';
-import initVirtualMetrics from './virtual-metrics.js';
+import initVisualMetrics from './visual-metrics.js';
 
 const winURL =
     process.env.NODE_ENV === 'development'
-        ? `http://localhost:9080`
-        : `file://${__dirname}/index.html`;
+        ? `http://localhost:9080/renderer.html`
+        : `file://${__dirname}/renderer.html`;
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -23,5 +23,5 @@ function createWindow() {
 
 app.on('ready', () => {
     createWindow();
-    initVirtualMetrics();
+    initVisualMetrics();
 });

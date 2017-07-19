@@ -7,16 +7,11 @@ const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
-const { dependencies } = require('../package.json');
 
 const env = process.env.NODE_ENV || 'development';
 
 const common = {
     target: 'electron-main',
-    entry: {
-        main: path.join(__dirname, '../src/main/index.js')
-    },
-    externals: [...Object.keys(dependencies || {})],
     output: {
         filename: '[name].js',
         libraryTarget: 'commonjs2',
@@ -64,6 +59,9 @@ const common = {
     ]
 };
 const dev = webpackMerge(common, {
+    entry: {
+        main: path.join(__dirname, '../src/main/index.dev.js')
+    },
     cache: true,
     devtool: 'eval-source-map',
     plugins: [
@@ -73,11 +71,22 @@ const dev = webpackMerge(common, {
     ]
 });
 const prod = webpackMerge(common, {
+    entry: {
+        main: path.join(__dirname, '../src/main/index.js')
+    },
     plugins: [
-        new CopyWebpackPlugin([{
-            from: path.join(__dirname, '../src/visualmetrics/visualmetrics.py'),
-            to: path.join(__dirname, '../dist/visualmetrics/visualmetrics.py')
-        }]),
+        new CopyWebpackPlugin([
+            {
+                from: path.join(
+                    __dirname,
+                    '../src/third-party/visualmetrics/visualmetrics.py'
+                ),
+                to: path.join(
+                    __dirname,
+                    '../dist/third-party/visualmetrics/visualmetrics.py'
+                )
+            }
+        ]),
         new BabiliWebpackPlugin({
             removeConsole: true,
             removeDebugger: true

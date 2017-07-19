@@ -10,23 +10,23 @@ import logger from 'electron-log';
  *      - listener : category : event
  *
  *  listen
- *      - main:virtual-metrics:start-analyse, videoFile
- *      - main:virtual-metrics:stop-analyse, taskId
+ *      - main:visual-metrics:start-analyse, videoFile
+ *      - main:visual-metrics:stop-analyse, taskId
  *  emit
- *      - renderer:virtual-metrics:analyse-started, taskId
- *      - renderer:virtual-metrics:analyse-stopped, taskId
- *      - renderer:virtual-metrics:analyse-success, taskId, imageList
- *      - renderer:virtual-metrics:analyse-failure, taskId, error
+ *      - renderer:visual-metrics:analyse-started, taskId
+ *      - renderer:visual-metrics:analyse-stopped, taskId
+ *      - renderer:visual-metrics:analyse-success, taskId, imageList
+ *      - renderer:visual-metrics:analyse-failure, taskId, error
  */
 
-const virtualMetricPath = path.resolve(
+const visualMetricPath = path.resolve(
     __dirname,
-    '../visualmetrics/visualmetrics.py'
+    '../third-party/visualmetrics/visualmetrics.py'
 );
-const tmpdir = path.join(os.tmpdir(), 'virtualmetric');
+const tmpdir = path.join(os.tmpdir(), 'visualmetric');
 
-// communicate with virtualmetric
-class VirtualMetricTask {
+// communicate with visualmetric
+class VisualMetricTask {
     // status
     // - waiting <- create
     // - running <- start waiting
@@ -45,7 +45,7 @@ class VirtualMetricTask {
     _spawn() {
         return new Promise((resolve, reject) => {
             this.childProcess = spawn('python2', [
-                virtualMetricPath,
+                visualMetricPath,
                 '--video',
                 this.file,
                 '--dir',
@@ -76,7 +76,9 @@ class VirtualMetricTask {
                         }
                     });
                 } else {
-                    reject(new Error(`TODO: error code ${code}, signal ${signal}`));
+                    reject(
+                        new Error(`TODO: error code ${code}, signal ${signal}`)
+                    );
                 }
             });
         });
@@ -114,7 +116,7 @@ class VirtualMetricTask {
     }
 
     cleanup() {
-        fs.unlink(this.tmpdir, (err) => {
+        fs.unlink(this.tmpdir, err => {
             if (err) {
                 logger.error(err);
             }
@@ -123,29 +125,29 @@ class VirtualMetricTask {
 }
 
 // communicate with renderer
-const initVirtualMetrics = () => {
+const initVisualMetrics = () => {
     let ID = 0;
     const taskMap = {};
 
     // start
-    ipcMain.on('main:virtual-metrics:start-analyse', (event, videoFile) => {
+    ipcMain.on('main:visual-metrics:start-analyse', (event, videoFile) => {
         ID++;
 
         const taskId = ID;
-        const task = new VirtualMetricTask(videoFile, taskId);
-        event.sender.send('renderer:virtual-metrics:analyse-started', taskId);
+        const task = new VisualMetricTask(videoFile, taskId);
+        event.sender.send('renderer:visual-metrics:analyse-started', taskId);
 
         const pTask = task.start();
         pTask.then(imageList => {
             event.sender.send(
-                'renderer:virtual-metrics:analyse-success',
+                'renderer:visual-metrics:analyse-success',
                 taskId,
                 imageList
             );
         });
         pTask.catch(err => {
             event.sender.send(
-                'renderer:virtual-metrics:analyse-failure',
+                'renderer:visual-metrics:analyse-failure',
                 taskId,
                 err
             );
@@ -153,11 +155,11 @@ const initVirtualMetrics = () => {
     });
 
     // stop
-    ipcMain.on('main:virtual-metrics:stop-analyse', (event, taskId) => {
+    ipcMain.on('main:visual-metrics:stop-analyse', (event, taskId) => {
         const task = taskMap[taskId];
         if (task) task.stop();
-        event.sender.send('renderer:virtual-metrics:analyse-stopped', taskId);
+        event.sender.send('renderer:visual-metrics:analyse-stopped', taskId);
     });
 };
 
-export default initVirtualMetrics;
+export default initVisualMetrics;

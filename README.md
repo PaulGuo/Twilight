@@ -5,14 +5,12 @@
 #### Build Setup
 
 ```bash
-# install dependencies
-yarn
-
 # serve with hot reload at localhost:9080
 yarn run dev
 
 # build electron application for production
-yarn run build
+yarn run build:pack
+yarn run build:dist
 ```
 
 #### Build Process

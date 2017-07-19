@@ -7,13 +7,19 @@ dev:
 lint:
 	eslint --ext .js,.vue src
 
-build-main:
+build-prepare:
+	rm -rf 'dist/*'
+
+build-main: build-prepare
 	NODE_ENV=production webpack --config build/webpack.main.config.js
 
-build-renderer:
+build-renderer: build-prepare
 	NODE_ENV=production webpack --config build/webpack.renderer.config.js
 
-build: build-main build-renderer
+build-pack: build-prepare build-main build-renderer
 	electron-builder --dir
 
-.PHONY: dev lint build build-main build-renderer
+build-dist: build-prepare build-main build-renderer
+	electron-builder
+
+.PHONY: dev lint build-dist build-pack build-prepare build-main build-renderer

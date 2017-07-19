@@ -1,13 +1,12 @@
-import { get, set } from 'lodash';
+import { ipcRenderer } from 'electron';
 
 const install = function(Vue) {
     Vue.prototype.$state = {
-        _state: {},
         get(key) {
-            return get(this._state, key);
+            return ipcRenderer.sendSync('STATE:GET', key);
         },
         set(key, value) {
-            return set(this._state, key, value);
+            ipcRenderer.sendSync('STATE:SET', key, value);
         }
     };
 };

@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow } from 'electron';
 import initVisualMetrics from './visual-metrics.js';
+import initState from './state.js';
 
 const winURL =
     process.env.NODE_ENV === 'development'
@@ -24,4 +25,5 @@ function createWindow() {
 app.on('ready', () => {
     createWindow();
     initVisualMetrics();
+    initState();
 });

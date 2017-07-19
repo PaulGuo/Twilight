@@ -24,6 +24,11 @@
 </style>
 
 <style scoped>
+    #upload {
+        height: 100%;
+        background: #1ABC9C;
+    }
+
     .video-uploader {
         position: absolute;
         top: 50%;

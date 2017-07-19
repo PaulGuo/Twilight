@@ -5,6 +5,7 @@ process.env.BABEL_ENV = 'main';
 const path = require('path');
 const webpack = require('webpack');
 const webpackMerge = require('webpack-merge');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
 const { dependencies } = require('../package.json');
 
@@ -50,6 +51,9 @@ const common = {
         __filename: process.env.NODE_ENV !== 'production'
     },
     resolve: {
+        alias: {
+            '@main': path.join(__dirname, '../src/main')
+        },
         extensions: ['.js', '.json', '.node']
     },
     plugins: [
@@ -57,26 +61,23 @@ const common = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(env)
         })
-    ],
-    stats: {
-        children: false,
-        chunks: false
-    },
-    performance: {
-        hints: false
-    }
+    ]
 };
 const dev = webpackMerge(common, {
     cache: true,
     devtool: 'eval-source-map',
     plugins: [
+        new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        new webpack.NamedModulesPlugin()
+        new webpack.NoEmitOnErrorsPlugin()
     ]
 });
 const prod = webpackMerge(common, {
     plugins: [
+        new CopyWebpackPlugin([{
+            from: path.join(__dirname, '../src/visualmetrics/visualmetrics.py'),
+            to: path.join(__dirname, '../dist/visualmetrics/visualmetrics.py')
+        }]),
         new BabiliWebpackPlugin({
             removeConsole: true,
             removeDebugger: true

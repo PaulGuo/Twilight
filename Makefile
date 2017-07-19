@@ -1,25 +1,28 @@
 SHELL := /bin/bash
 PATH := ./node_modules/.bin:$(PATH)
 
-dev:
-	node build/dev.js
+dev: cleanup
+	@node ./build/restart-electron-main.js & \
+		webpack --watch --config ./build/webpack.main.config.js > /dev/null & \
+		webpack-dev-server --config ./build/webpack.renderer.config.js > /dev/null & \
+		wait
 
 lint:
 	eslint --ext .js,.vue src
 
-build-prepare:
-	rm -rf 'dist/*'
+cleanup:
+	rm -rf ./dist/*
 
-build-main: build-prepare
-	NODE_ENV=production webpack --config build/webpack.main.config.js
+build-main: cleanup
+	NODE_ENV=production webpack --config ./build/webpack.main.config.js
 
-build-renderer: build-prepare
-	NODE_ENV=production webpack --config build/webpack.renderer.config.js
+build-renderer: cleanup
+	NODE_ENV=production webpack --config ./build/webpack.renderer.config.js
 
-build-pack: build-prepare build-main build-renderer
+build-pack: build-main build-renderer
 	electron-builder --dir
 
-build-dist: build-prepare build-main build-renderer
+build-dist: build-main build-renderer
 	electron-builder
 
-.PHONY: dev lint build-dist build-pack build-prepare build-main build-renderer
+.PHONY: dev lint build-dist build-pack cleanup build-main build-renderer

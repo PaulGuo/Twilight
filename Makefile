@@ -3,8 +3,8 @@ PATH := ./node_modules/.bin:$(PATH)
 
 dev: cleanup
 	@node ./build/restart-electron-main.js & \
-		webpack --watch --config ./build/webpack.main.config.js > /dev/null & \
-		webpack-dev-server --config ./build/webpack.renderer.config.js > /dev/null & \
+		webpack --watch --config ./build/webpack.main.config.js & \
+		webpack-dev-server --config ./build/webpack.renderer.config.js & \
 		wait
 
 lint:

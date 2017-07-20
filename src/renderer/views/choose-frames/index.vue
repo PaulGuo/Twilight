@@ -36,28 +36,44 @@ export default {
     },
 
     methods: {
+        _cleanup_ipc() {
+            const ipc = this.$electron.ipcRenderer;
+            ipc.removeAllListeners('renderer:visual-metrics-extract:analyse-started');
+            ipc.removeAllListeners('renderer:visual-metrics-extract:analyse-stopped');
+            ipc.removeAllListeners('renderer:visual-metrics-extract:analyse-success');
+            ipc.removeAllListeners('renderer:visual-metrics-extract:analyse-failure');
+        },
+
         goBack() {
+            this._cleanup_ipc();
+            this.$state.clear('images');
+            this.$state.clear('frames');
             this.$router.back();
+        },
+        goTo(path) {
+            this._cleanup_ipc();
+            this.$state.clear('images');
+            this.$router.push(path);
         },
 
         stopProcessAndGoBack() {
             const ipc = this.$electron.ipcRenderer;
 
-            ipc.on('renderer:visual-metrics:analyse-stopped', (event, tid) => {
+            ipc.on('renderer:visual-metrics-extract:analyse-stopped', (event, tid) => {
                 this.goBack();
             });
 
-            ipc.send('main:visual-metrics:stop-analyse', this.taskId);
+            ipc.send('main:visual-metrics-extract:stop-analyse', this.taskId);
         },
         processVideo(video) {
             const ipc = this.$electron.ipcRenderer;
 
-            ipc.on('renderer:visual-metrics:analyse-started', (event, tid) => {
+            ipc.on('renderer:visual-metrics-extract:analyse-started', (event, tid) => {
                 console.log(tid);
             });
 
             ipc.on(
-                'renderer:visual-metrics:analyse-success',
+                'renderer:visual-metrics-extract:analyse-success',
                 (event, tid, images) => {
                     this.$state.set('images', images);
                     this.startChoose(images);
@@ -65,7 +81,7 @@ export default {
             );
 
             ipc.on(
-                'renderer:visual-metrics:analyse-failure',
+                'renderer:visual-metrics-extract:analyse-failure',
                 (event, tid, err) => {
                     console.log(err);
                     alert(err);
@@ -73,7 +89,7 @@ export default {
                 },
             );
 
-            ipc.send('main:visual-metrics:start-analyse', video);
+            ipc.send('main:visual-metrics-extract:start-analyse', video);
         },
 
         startChoose(images) {
@@ -81,9 +97,8 @@ export default {
             this.processing = false;
         },
         startAnalyse(frames) {
-            this.$state.clear('result');
             this.$state.set('frames', frames);
-            this.$router.push('/analyse-result');
+            this.goTo('analyse-result');
         },
     },
 

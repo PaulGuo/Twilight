@@ -3,13 +3,14 @@ import { ipcRenderer } from 'electron';
 const install = function(Vue) {
     Vue.prototype.$state = {
         get(key) {
-            return ipcRenderer.sendSync('STATE:GET', key);
+            const value = ipcRenderer.sendSync('STATE:GET', key);
+            return value;
         },
         set(key, value) {
             ipcRenderer.sendSync('STATE:SET', key, value);
         },
         clear(key) {
-            ipcRenderer.sendSync('STATE:SET', key, undefined);
+            this.set(key, null);
         },
     };
 };

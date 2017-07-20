@@ -5,7 +5,7 @@
     }
 
     .spinner-action-group {
-        margin-top: 14px;
+        margin-top: 35px;
         text-align: center;
     }
 </style>
@@ -14,7 +14,7 @@
     <div class="spinner">
         <v-spinner>
             <div class="spinner-action-group">
-                <el-button type="danger" @click="stop">终止</el-button>
+                <el-button @click="stop" size="small">终止</el-button>
             </div>
         </v-spinner>
     </div>

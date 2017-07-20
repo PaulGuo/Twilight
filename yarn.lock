@@ -1397,12 +1397,12 @@ caniuse-api@^1.5.2:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000703"
-  resolved "http://registry.npm.taobao.org/caniuse-db/download/caniuse-db-1.0.30000703.tgz#c7d899b8adea6da1aa587355d39ac8533f878403"
+  version "1.0.30000704"
+  resolved "http://registry.npm.taobao.org/caniuse-db/download/caniuse-db-1.0.30000704.tgz#8c5aa6fed8058e65c70f2c1f5d63f7088650705c"
 
 caniuse-lite@^1.0.30000701:
-  version "1.0.30000703"
-  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000703.tgz#666e8c3f1e4f7abb1d16d48e04e7e9e8df934925"
+  version "1.0.30000704"
+  resolved "http://registry.npm.taobao.org/caniuse-lite/download/caniuse-lite-1.0.30000704.tgz#adb6ea01134515663682db93abab291d4c02946b"
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -6008,8 +6008,8 @@ table@^4.0.1:
     string-width "^2.0.0"
 
 tapable@^0.2.5, tapable@~0.2.5:
-  version "0.2.6"
-  resolved "http://registry.npm.taobao.org/tapable/download/tapable-0.2.6.tgz#206be8e188860b514425375e6f1ae89bfb01fd8d"
+  version "0.2.7"
+  resolved "http://registry.npm.taobao.org/tapable/download/tapable-0.2.7.tgz#e46c0daacbb2b8a98b9b0cea0f4052105817ed5c"
 
 tar-pack@^3.4.0:
   version "3.4.0"

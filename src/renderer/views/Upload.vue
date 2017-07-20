@@ -109,9 +109,8 @@ export default {
             return false;
         },
         upload() {
-            this.$state.clear('images');
             this.$state.set('video', this.video);
-            this.$router.push('/choose-frames');
+            this.$router.push('choose-frames');
         },
         cleanup() {
             this.video = null;

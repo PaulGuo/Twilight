@@ -5,7 +5,8 @@ const init = () => {
     const state = {};
 
     ipcMain.on('STATE:GET', (event, key) => {
-        event.returnValue = get(state, key);
+        const value = get(state, key, null);
+        event.returnValue = value;
     });
 
     ipcMain.on('STATE:SET', (event, key, value) => {

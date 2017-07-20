@@ -19,18 +19,28 @@
     .visual {
         height: 100px;
         display: flex;
-        font-size: 30px;
+        font-size: 28px;
 
         div {
             flex: 1;
             text-align: center;
             align-self: center;
+            span {
+                display: block;
+            }
         }
     }
 
     .chart {
+        width: 100%;
         height: calc(100% - 100px - 100px);
-        background: #16A085;
+        padding: 10px 20px;
+        background: #ECF0F1;
+
+        .canvas {
+            width: 100%;
+            height: 100%;
+        }
     }
 </style>
 
@@ -49,42 +59,119 @@
         <div class="visual">
             <div>
                 <span>FCP</span>
-                <span>{{result.FCP}}</span>
+                <span>{{result.FCP}}ms</span>
             </div>
             <div>
                 <span>FMP</span>
-                <span>{{result.FMP}}</span>
+                <span>{{result.FMP}}ms</span>
             </div>
             <div>
                 <span>FVC</span>
-                <span>{{result.FirstVisualChange}}</span>
+                <span>{{result.FirstVisualChange}}ms</span>
             </div>
             <div>
                 <span>LVC</span>
-                <span>{{result.LastVisualChange}}</span>
+                <span>{{result.LastVisualChange}}ms</span>
             </div>
         </div>
         <div class="chart">
+            <canvas ref="canvas" class="canvas"></canvas>
         </div>
     </div>
 </template>
 
 <script>
+import Chart from 'chart.js';
+
 export default {
     props: {
         result: {
             type: Object,
             required: true,
-        }
-    },
-    data() {
-        return {
-        };
+        },
     },
     methods: {
+        renderChart() {
+            const result = this.result;
+            const labels = result.SpeedIndexChart.map(x => x[0]);
+            const dataSI = result.SpeedIndexChart.map(x => x[1]);
+            const dataPSI = result.PerceptualSpeedIndexChart.map(
+                x => Math.round(x[1] * 100) / 100,
+            );
+            const ctx = this.$refs.canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            steppedLine: true,
+                            label: 'SpeedIndex',
+                            yAxisID: 'y-si',
+                            data: dataSI,
+                            //backgroundColor: '#E74C3C',
+                            backgroundColor: 'rgba(231,76,60,.5)',
+                        },
+                        {
+                            steppedLine: true,
+                            label: 'PerceptualSpeedIndex',
+                            yAxisID: 'y-psi',
+                            data: dataPSI,
+                            //backgroundColor: '#3498DB',
+                            backgroundColor: 'rgba(52,152,219,.5)',
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        yAxes: [
+                            {
+                                id: 'y-si',
+                                type: 'linear',
+                                position: 'left',
+                                ticks: {
+                                    min: 0,
+                                    max: 100,
+                                },
+                            },
+                            {
+                                id: 'y-psi',
+                                type: 'linear',
+                                position: 'right',
+                                ticks: {
+                                    min: 0,
+                                    max: 1,
+                                },
+                            },
+                        ],
+                        xAxes: [
+                            {
+                                type: 'time',
+                                time: {
+                                    unit: 'millisecond',
+                                    displayFormats: {
+                                        millisecond: 'x',
+                                        second: 'x',
+                                        minute: 'x',
+                                        hour: 'x',
+                                        day: 'x',
+                                        week: 'x',
+                                        month: 'x',
+                                        quarter: 'x',
+                                        year: 'x',
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            });
+            return chart;
+        },
     },
     mounted() {
         console.log(this.result);
-    }
+        this.renderChart();
+    },
 };
 </script>

@@ -100,11 +100,6 @@ class VisualMetricsExtractTask extends AbstractVirtualMetricsTask {
                 this.file,
                 '--dir',
                 this.tmpdir,
-                '--quality',
-                '75',
-                '--orange',
-                '--gray',
-                '--viewport',
             ]);
 
             this.childProcess.on('error', err => {
@@ -166,11 +161,6 @@ class VisualMetricsAnalyseTask extends AbstractVirtualMetricsTask {
                 this.startTime,
                 '--end',
                 this.endTime,
-                '--quality',
-                '75',
-                '--orange',
-                '--gray',
-                '--viewport',
                 '--perceptual',
                 '--json',
             ]);

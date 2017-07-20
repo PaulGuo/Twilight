@@ -44,7 +44,7 @@ export default {
         },
 
         _extract_time(frame) {
-            const pattern = /ms_(\d+)\.jpg$/;
+            const pattern = /ms_(\d+)\.\w+$/;
             const matched = pattern.exec(frame);
             if (!matched || !matched[1]) return null;
             return Number(matched[1]);

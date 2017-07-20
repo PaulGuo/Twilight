@@ -26,7 +26,7 @@ const visualMetricPath = path.resolve(
 const genTmpdir = (id) => {
     const prefix = path.join(os.tmpdir(), `visualmetric-${id}-`);
     const dir = fs.mkdtempSync(prefix);
-    logger('tmpdir %s', dir);
+    logger.log('tmpdir %s', dir);
     return dir;
 };
 

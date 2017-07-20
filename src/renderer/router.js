@@ -8,21 +8,21 @@ export default new Router({
         {
             path: '/',
             name: 'upload-page',
-            component: require('@renderer/views/Upload.vue')
-        },
-        {
-            path: '/upload-progress',
-            name: 'upload-progress',
-            component: require('@renderer/views/UploadProgress.vue')
+            component: require('@renderer/views/Upload.vue'),
         },
         {
             path: '/choose-frames',
             name: 'choose-frames',
-            component: require('@renderer/views/ChooseFrames.vue')
+            component: require('@renderer/views/choose-frames/index.vue'),
+        },
+        {
+            path: '/analyse-result',
+            name: 'analyse-result',
+            component: require('@renderer/views/analyse-result/index.vue'),
         },
         {
             path: '*',
-            redirect: '/'
-        }
-    ]
+            redirect: '/',
+        },
+    ],
 });

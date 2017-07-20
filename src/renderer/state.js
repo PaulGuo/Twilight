@@ -7,10 +7,13 @@ const install = function(Vue) {
         },
         set(key, value) {
             ipcRenderer.sendSync('STATE:SET', key, value);
-        }
+        },
+        clear(key) {
+            ipcRenderer.sendSync('STATE:SET', key, undefined);
+        },
     };
 };
 
 export default {
-    install
+    install,
 };

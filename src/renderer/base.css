@@ -66,3 +66,9 @@ td {
   content: " ";
   display: table;
 }
+
+/******/
+body {
+  background: #1abc9c;
+  color: #fff;
+}

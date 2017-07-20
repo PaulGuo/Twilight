@@ -1,7 +1,7 @@
 <style lang="scss">
     #upload {
         .video-uploader .el-upload {
-            border: 3px dashed #d9d9d9;
+            border: 3px dashed #fff;
             border-radius: 6px;
             cursor: pointer;
             position: relative;
@@ -9,12 +9,12 @@
         }
 
         .video-uploader .el-upload:hover {
-            border-color: #20a0ff;
+            border-color: #3498DB;
         }
 
         .video-uploader-icon {
             font-size: 28px;
-            color: #8c939d;
+            color: #fff;
             width: 378px;
             height: 278px;
             line-height: 278px;
@@ -26,7 +26,6 @@
 <style scoped>
     #upload {
         height: 100%;
-        background: #1ABC9C;
     }
 
     .video-uploader {
@@ -56,48 +55,45 @@
 </style>
 
 <template>
-<div id="upload">
-    <div v-if="file" class="video">
-        <video class="video-content" controls muted :src="'file://' + file"></video>
-        <div class="video-btns">
-            <el-button type="danger" @click="cleanup">重新选择</el-button>
-            <el-button type="primary" @click="upload">开始分析</el-button>
+    <div id="upload">
+        <div v-if="video" class="video">
+            <video class="video-content" controls muted :src="'file://' + video"></video>
+            <div class="video-btns">
+                <el-button type="danger" @click="cleanup">重新选择</el-button>
+                <el-button type="primary" @click="upload">开始分析</el-button>
+            </div>
         </div>
+        <el-upload v-else class="video-uploader"
+            accept="video/*"
+            action="/"
+            type="drag"
+            :multiple="false"
+            :before-upload="beforeUpload">
+            <i class="el-icon-plus video-uploader-icon"></i>
+        </el-upload>
     </div>
-    <el-upload v-else class="video-uploader"
-        accept="video/*"
-        action="/"
-        :multiple="false"
-        :before-upload="beforeUpload">
-        <i class="el-icon-plus video-uploader-icon"></i>
-    </el-upload>
-</div>
 </template>
 
 <script>
 export default {
-    name: 'upload-page',
     data() {
         return {
-            file: null
+            video: null,
         };
     },
     methods: {
         beforeUpload(file) {
-            this.file = file.path;
+            this.video = file.path;
             return false;
         },
         upload() {
-            this.$router.push({
-                name: 'upload-progress',
-                query: {
-                    file: this.file
-                }
-            });
+            this.$state.clear('images');
+            this.$state.set('video', this.video);
+            this.$router.push('/choose-frames');
         },
         cleanup() {
-            this.file = null;
-        }
-    }
+            this.video = null;
+        },
+    },
 };
 </script>

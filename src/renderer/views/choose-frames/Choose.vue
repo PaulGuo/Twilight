@@ -1,11 +1,11 @@
 <style scoped lang="scss">
-    #choose {
+    .choose {
         height: 100%;
-        background: #1ABC9C;
+        width: 100%;
     }
 
     .box-group {
-        height: calc(100% - 120px);
+        height: calc(100% - 120px - 80px);
         display: flex;
 
         .box {
@@ -23,27 +23,22 @@
                 display: inline-block;
                 width: 200px;
                 height: 300px;
-                border: 3px dashed #d9d9d9;
+                border: 3px dashed #fff;
                 border-radius: 6px;
 
                 i {
                     font-size: 28px;
-                    color: #d9d9d9;
+                    color: #fff;
                     width: 200px;
                     height: 300px;
                     line-height: 300px;
                     text-align: center;
                 }
             }
-        }
 
-        .start {
-        }
-        .fcp {
-        }
-        .fmp {
-        }
-        .end {
+            .frame-title {
+                margin: 10px 0;
+            }
         }
     }
 
@@ -52,7 +47,7 @@
         height: 120px;
         overflow-x: auto;
         overflow-y: hidden;
-        background: #eee;
+        background: #ECF0F1;
 
         ul {
             display: block;
@@ -70,20 +65,33 @@
             height: 100px;
         }
     }
+
+    .controls {
+        text-align: center;
+        height: 80px;
+        padding: 22px 0;
+    }
 </style>
 
 <template>
-    <div id="choose">
+    <div class="choose">
         <div class="box-group">
             <div class="box"
                 @dragover.prevent="over($event)"
                 @drop.prevent="drop($event, frame)"
                 v-for="frame in Object.keys(frames)">
+                <h1 class="frame-title">{{frame}}</h1>
                 <img v-if="frames[frame]" :src="'file://' + frames[frame]" />
                 <div v-else class="placeholder">
                     <i class="el-icon-plus"></i>
                 </div>
             </div>
+        </div>
+        <div class="controls">
+            <el-button type="danger" @click="stop">返回重新选择视频</el-button>
+            <el-button type="primary"
+                :disabled="!(frames.START && frames.FCP && frames.FMP && frames.END)"
+                @click="startAnalyse">开始分析</el-button>
         </div>
         <div class="gallery">
             <ul>
@@ -100,16 +108,28 @@
 
 <script>
 export default {
-    name: 'choose-frames',
+    props: {
+        stop: {
+            type: Function,
+            required: true,
+        },
+        start: {
+            type: Function,
+            required: true,
+        },
+        images: {
+            type: Array,
+            required: true,
+        },
+    },
     data() {
         return {
             frames: {
-                start: null,
-                fc: null,
-                fm: null,
-                end: null
+                START: null,
+                FCP: null,
+                FMP: null,
+                END: null,
             },
-            images: []
         };
     },
     methods: {
@@ -122,11 +142,26 @@ export default {
         drop(event, frame) {
             const img = event.dataTransfer.getData('text');
             this.frames[frame] = img;
-        }
+        },
+
+        startAnalyse() {
+            const frames = [
+                this.frames.START,
+                this.frames.FCP,
+                this.frames.FMP,
+                this.frames.END,
+            ];
+            const isSorted = frames.reduce((l, r) => {
+                if (l === false) return false;
+                if (l >= r) return false;
+                return r;
+            });
+            if (isSorted === false) {
+                alert('图片顺序有误，请重新选择');
+                return;
+            }
+            this.start(this.frames);
+        },
     },
-    mounted() {
-        const images = this.$state.get('images');
-        this.images = images;
-    }
 };
 </script>

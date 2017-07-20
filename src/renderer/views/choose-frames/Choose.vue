@@ -88,7 +88,7 @@
             </div>
         </div>
         <div class="controls">
-            <el-button type="danger" @click="stop">返回重新选择视频</el-button>
+            <el-button @click="stop">返回重新选择视频</el-button>
             <el-button type="primary"
                 :disabled="!(frames.START && frames.FCP && frames.FMP && frames.END)"
                 @click="startAnalyse">开始分析</el-button>

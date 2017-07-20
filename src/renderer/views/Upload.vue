@@ -28,7 +28,7 @@
         height: 100%;
     }
 
-    .video-uploader {
+    .upload-container {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -43,14 +43,30 @@
     }
 
     .video-content {
-        box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
         max-width: 320px;
         max-height: 480px;
     }
 
     .video-btns {
         text-align: center;
-        margin-top: 14px;
+        margin-top: 25px;
+    }
+
+    .upload-container-title {
+        text-align: center;
+        margin-bottom: 25px;
+        opacity: 0.3;
+    }
+
+    .footer {
+        position: absolute;
+        bottom: 15px;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        font-family: "Hiragino Kaku Gothic ProN";
+        opacity: 0.5;
     }
 </style>
 
@@ -59,18 +75,24 @@
         <div v-if="video" class="video">
             <video class="video-content" controls muted :src="'file://' + video"></video>
             <div class="video-btns">
-                <el-button type="danger" @click="cleanup">重新选择</el-button>
+                <el-button @click="cleanup">重新选择</el-button>
                 <el-button type="primary" @click="upload">开始分析</el-button>
             </div>
         </div>
-        <el-upload v-else class="video-uploader"
-            accept="video/*"
-            action="/"
-            type="drag"
-            :multiple="false"
-            :before-upload="beforeUpload">
-            <i class="el-icon-plus video-uploader-icon"></i>
-        </el-upload>
+        <div v-else class="upload-container">
+            <h1 class="upload-container-title">DRAG SCREEN RECORD HERE</h1>
+            <el-upload class="video-uploader"
+                accept="video/*"
+                action="/"
+                type="drag"
+                :multiple="false"
+                :before-upload="beforeUpload">
+                <i class="el-icon-plus video-uploader-icon"></i>
+            </el-upload>
+        </div>
+        <div class="footer">
+            ♥ Design and Implementation by PaulGuo and nirisix
+        </div>
     </div>
 </template>
 

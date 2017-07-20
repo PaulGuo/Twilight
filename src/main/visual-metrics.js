@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { spawn } from 'child_process';
-import { app, ipcMain } from 'electron';
+import { ipcMain } from 'electron';
 import logger from 'electron-log';
 
 /**
@@ -23,19 +23,12 @@ const visualMetricPath = path.resolve(
     __dirname,
     '../third-party/visualmetrics/visualmetrics.py'
 );
-const tmpdir = path.join(os.tmpdir(), 'visualmetric');
-
-app.on('ready', () => {
-    fs.mkdir(tmpdir, err => {
-        if (err) logger.error(err);
-    });
-});
-
-app.on('quit', () => {
-    fs.unlink(tmpdir, err => {
-        if (err) logger.error(err);
-    });
-});
+const genTmpdir = (id) => {
+    const prefix = path.join(os.tmpdir(), `visualmetric-${id}-`);
+    const dir = fs.mkdtempSync(prefix);
+    logger('tmpdir %s', dir);
+    return dir;
+};
 
 // communicate with visualmetric
 class VisualMetricTask {
@@ -48,10 +41,10 @@ class VisualMetricTask {
 
     constructor(videoFile, id) {
         this.id = id;
-        this.tmpdir = path.join(tmpdir, `${id}-${Date.now()}`);
         this.file = videoFile;
         this.childProcess = null;
         this.status = 'waiting';
+        this.tmpdir = genTmpdir(id);
     }
 
     _spawn() {
@@ -109,7 +102,6 @@ class VisualMetricTask {
         });
         p.catch(() => {
             this.status = 'failure';
-            this.cleanup();
         });
         return p;
     }
@@ -124,15 +116,6 @@ class VisualMetricTask {
                 this.status = 'stopped';
                 break;
         }
-        this.cleanup();
-    }
-
-    cleanup() {
-        fs.unlink(this.tmpdir, err => {
-            if (err) {
-                logger.error(err);
-            }
-        });
     }
 }
 

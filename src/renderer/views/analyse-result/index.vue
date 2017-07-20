@@ -73,6 +73,8 @@ export default {
                 (event, tid, result) => {
                     result.FCP = frames.FCP - frames.START;
                     result.FMP = frames.FMP - frames.START;
+                    result.FirstVisualChange = result.FirstVisualChange - frames.START;
+                    result.LastVisualChange = result.LastVisualChange - frames.START;
                     this.$state.set('result', result);
                     this.showResult(result);
                 },

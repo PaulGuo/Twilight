@@ -148,10 +148,7 @@ class VisualMetricsAnalyseTask extends AbstractVirtualMetricsTask {
                 const json = buf.toString();
                 try {
                     const value = JSON.parse(json);
-                    value.VisualProgress = value.VisualProgress
-                        .split(',')
-                        .map(x => x.trim().split('='))
-                        .map(x => [Number(x[0]), parseInt(x[1])]);
+                    value.PerceptualSpeedIndexChart.unshift([0, 0]);
                     resolve(value);
                 } catch (err) {
                     logger.error(`err output: ${json}`);

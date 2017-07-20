@@ -91,7 +91,7 @@
             </el-upload>
         </div>
         <div class="footer">
-            ♥ Design and Implementation by PaulGuo and nirisix
+            ♥ Design and Implementation by PaulGuo and niris
         </div>
     </div>
 </template>

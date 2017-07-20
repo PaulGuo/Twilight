@@ -106,7 +106,7 @@ export default {
                     datasets: [
                         {
                             steppedLine: true,
-                            label: 'SpeedIndex',
+                            label: 'SI',
                             yAxisID: 'y-si',
                             data: dataSI,
                             //backgroundColor: '#E74C3C',
@@ -114,7 +114,7 @@ export default {
                         },
                         {
                             steppedLine: true,
-                            label: 'PerceptualSpeedIndex',
+                            label: 'PSI',
                             yAxisID: 'y-psi',
                             data: dataPSI,
                             //backgroundColor: '#3498DB',

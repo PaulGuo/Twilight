@@ -88,13 +88,13 @@ def video_to_frames(video, directory, force, orange_file, white_file, gray_file,
                             remove_orange_frames(dir, orange_file)
                         find_first_frame(dir, white_file)
                         blank_first_frame(dir)
-                        find_render_start(dir, orange_file, gray_file)
+                        # find_render_start(dir, orange_file, gray_file)
                         find_last_frame(dir, white_file)
                         adjust_frame_times(dir)
                         if timeline_file is not None and not multiple:
                             synchronize_to_timeline(dir, timeline_file)
-                        eliminate_duplicate_frames(dir)
-                        eliminate_similar_frames(dir)
+                        # eliminate_duplicate_frames(dir)
+                        # eliminate_similar_frames(dir)
                         # See if we are limiting the number of frames to keep
                         # (before processing them to save processing time)
                         if options.maxframes > 0:

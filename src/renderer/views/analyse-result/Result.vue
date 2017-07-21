@@ -1,46 +1,68 @@
 <style scoped lang="scss">
-.result {
-  height: 100%;
-  width: 100%;
-}
-
-.speed {
-  height: 100px;
-  display: flex;
-  font-size: 30px;
-
-  div {
-    flex: 1;
-    text-align: center;
-    align-self: center;
-  }
-}
-
-.visual {
-  height: 100px;
-  display: flex;
-  font-size: 28px;
-
-  div {
-    flex: 1;
-    text-align: center;
-    align-self: center;
-    span {
-      display: block;
+    .result {
+        height: 100%;
+        width: 100%;
+        position: relative;
     }
-  }
-}
 
-.chart {
-  width: 100%;
-  height: calc(100% - 100px - 100px);
-  padding: 10px 20px;
-  background: #ecf0f1;
-}
+    .speed {
+        height: 100px;
+        display: flex;
+        font-size: 30px;
+
+        div {
+            flex: 1;
+            text-align: center;
+            align-self: center;
+        }
+    }
+
+    .visual {
+        height: 100px;
+        display: flex;
+        font-size: 28px;
+
+        div {
+            flex: 1;
+            text-align: center;
+            align-self: center;
+            span {
+                display: block;
+            }
+        }
+    }
+
+    .chart {
+        width: 100%;
+        height: calc(100% - 100px - 100px);
+        padding: 10px 20px;
+        background: #ecf0f1;
+    }
+
+    .close {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        color: #7f8c8d;
+        border: 2px solid #7f8c8d;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 30px;
+
+        .icon {
+            font-size: 40px;
+        }
+    }
 </style>
 
 <template>
     <div class="result">
+        <div class="close" @click="back">
+            <i class="icon">x</i>
+        </div>
         <div class="speed">
             <div class="si">
                 <span>SI</span>
@@ -84,6 +106,10 @@ export default {
             type: Object,
             required: true,
         },
+        back: {
+            type: Function,
+            required: true,
+        }
     },
     methods: {
         renderChart() {

@@ -12,6 +12,7 @@
             ></v-spinner>
         <v-result v-else
             :result="result"
+            :back="backToHome"
             ></v-result>
     </div>
 </template>
@@ -36,10 +37,12 @@ export default {
     methods: {
         goBack() {
             this.$state.clear('result');
+            this.$state.clear('frames');
             this.$router.back();
         },
         goTo(path) {
             this.$state.clear('result');
+            this.$state.clear('frames');
             this.$router.push(path);
         },
 
@@ -103,6 +106,9 @@ export default {
             this.result = result;
             this.processing = false;
         },
+        backToHome() {
+            this.goTo('upload-page');
+        }
     },
 
     mounted() {

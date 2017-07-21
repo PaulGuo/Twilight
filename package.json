@@ -20,6 +20,10 @@
         "files": [
             "dist/**/*"
         ],
+        "extraResources": [{
+            "from": "src/third-party/",
+            "to": "third-party/"
+        }],
         "dmg": {
             "contents": [
                 {

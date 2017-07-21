@@ -30,10 +30,20 @@ import logger from 'electron-log';
  *          - renderer:visual-metrics-analyse:analyse-failure, taskId, error
  */
 
-const visualMetricPath = path.resolve(
-    __dirname,
-    '../third-party/visualmetrics/visualmetrics.py',
-);
+let visualMetricPath;
+if (process.env.NODE_ENV === 'development') {
+    visualMetricPath = path.resolve(
+        __dirname,
+        '../third-party/visualmetrics/visualmetrics.py',
+    );
+} else {
+    visualMetricPath = path.resolve(
+        process.resourcesPath,
+        './third-party/visualmetrics/visualmetrics.py',
+    );
+}
+
+logger.debug(visualMetricPath);
 const genTmpdir = id => {
     const prefix = path.join(os.tmpdir(), `visualmetrics-${id}-`);
     const dir = fs.mkdtempSync(prefix);
@@ -102,6 +112,12 @@ class VisualMetricsExtractTask extends AbstractVirtualMetricsTask {
                 this.tmpdir,
             ]);
 
+            this.childProcess.stderr.pipe(
+                concat(function(buf) {
+                    logger.error('pipe', buf.toString());
+                }),
+            );
+
             this.childProcess.on('error', err => {
                 logger.error(err);
                 reject(err);
@@ -165,6 +181,11 @@ class VisualMetricsAnalyseTask extends AbstractVirtualMetricsTask {
             ]);
 
             this.childProcess.stdout.pipe(stdout);
+            this.childProcess.stderr.pipe(
+                concat(function(buf) {
+                    logger.error('pipe', buf.toString());
+                }),
+            );
 
             this.childProcess.on('error', err => {
                 logger.error(err);

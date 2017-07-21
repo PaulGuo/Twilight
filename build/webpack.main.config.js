@@ -77,16 +77,6 @@ const prod = webpackMerge(common, {
     plugins: [
         new CopyWebpackPlugin([
             {
-                from: path.join(
-                    __dirname,
-                    '../src/third-party/visualmetrics/visualmetrics.py'
-                ),
-                to: path.join(
-                    __dirname,
-                    '../dist/third-party/visualmetrics/visualmetrics.py'
-                ),
-            },
-            {
                 from: path.join(__dirname, '../src/main/help.html'),
                 to: path.join(__dirname, '../dist/help.html'),
             },

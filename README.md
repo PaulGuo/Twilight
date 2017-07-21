@@ -1,4 +1,4 @@
-# twilight
+# Twilight
 
 > Visual Metrics GUI
 
@@ -16,3 +16,12 @@
 brew install ffmpeg imagemagick
 pip2 install Pillow pyssim
 ```
+
+### Usage
+
+- Step 1: Record the Video and Upload
+- Step 2: Choose the Key Frames
+	- Start, FCP, FMP, End Point
+- Step 3: Click the Button and then Get the Report
+
+![image](https://user-images.githubusercontent.com/758740/28420730-a39a7704-6d95-11e7-9adb-97c0953d785f.png)

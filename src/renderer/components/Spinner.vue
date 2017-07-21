@@ -44,18 +44,9 @@
         animation-delay: -0.8s;
     }
 
-    @-webkit-keyframes sk-stretchdelay {
+    @keyframes sk-stretchdelay {
         0%, 40%, 100% { transform: scaleY(0.4) }
         20% { transform: scaleY(1.0) }
-    }
-
-    @keyframes sk-stretchdelay {
-        0%, 40%, 100% {
-            transform: scaleY(0.4);
-        }
-        20% {
-            transform: scaleY(1.0);
-        }
     }
 </style>
 

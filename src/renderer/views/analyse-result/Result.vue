@@ -41,6 +41,7 @@
 
     .close {
         position: absolute;
+        cursor: pointer;
         left: 10px;
         top: 10px;
         display: inline-block;

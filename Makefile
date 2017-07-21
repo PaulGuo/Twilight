@@ -19,10 +19,10 @@ build-main: cleanup
 build-renderer: cleanup
 	NODE_ENV=production webpack --config ./build/webpack.renderer.config.js
 
-build-pack: build-main build-renderer
+pack: build-main build-renderer
 	electron-builder --dir
 
-build-dist: build-main build-renderer
+dist: build-main build-renderer
 	electron-builder
 
-.PHONY: dev lint build-dist build-pack cleanup build-main build-renderer
+.PHONY: dev lint dist pack cleanup build-main build-renderer

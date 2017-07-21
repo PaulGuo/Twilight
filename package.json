@@ -6,8 +6,8 @@
     "license": null,
     "main": "./dist/main.js",
     "scripts": {
-        "build:pack": "make -j2 build-pack",
-        "build:dist": "make -j2 build-dist",
+        "pack": "make -j2 pack",
+        "dist": "make -j2 dist",
         "lint": "make lint",
         "dev": "make dev"
     },

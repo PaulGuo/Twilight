@@ -1,5 +1,28 @@
 import process from 'process';
-import { Menu } from 'electron';
+import { Menu, BrowserWindow } from 'electron';
+import path from 'path';
+
+let helpWindow = null;
+const helpURL = 'file://' + path.resolve(__dirname, 'help.html');
+const openHelpWindow = () => {
+    if (helpWindow) {
+        helpWindow.focus();
+        return;
+    }
+
+    helpWindow = new BrowserWindow({
+        resizable: false,
+        title: 'help',
+        minimizable: false,
+        fullscreenable: false,
+    });
+
+    helpWindow.loadURL(helpURL);
+
+    helpWindow.on('closed', () => {
+        helpWindow = null;
+    });
+};
 
 const init = () => {
     const template = [
@@ -30,11 +53,9 @@ const init = () => {
             role: 'help',
             submenu: [
                 {
-                    label: 'Learn More',
+                    label: 'Usage Help',
                     click() {
-                        require('electron').shell.openExternal(
-                            'https://electron.atom.io',
-                        );
+                        openHelpWindow();
                     },
                 },
             ],

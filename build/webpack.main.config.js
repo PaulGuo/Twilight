@@ -15,7 +15,7 @@ const common = {
     output: {
         filename: '[name].js',
         libraryTarget: 'commonjs2',
-        path: path.join(__dirname, '../dist')
+        path: path.join(__dirname, '../dist'),
     },
     module: {
         rules: [
@@ -26,53 +26,53 @@ const common = {
                 use: {
                     loader: 'eslint-loader',
                     options: {
-                        formatter: require('eslint-friendly-formatter')
-                    }
-                }
+                        formatter: require('eslint-friendly-formatter'),
+                    },
+                },
             },
             {
                 test: /\.js$/,
                 use: 'babel-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.node$/,
-                use: 'node-loader'
-            }
-        ]
+                use: 'node-loader',
+            },
+        ],
     },
     node: {
         __dirname: process.env.NODE_ENV !== 'production',
-        __filename: process.env.NODE_ENV !== 'production'
+        __filename: process.env.NODE_ENV !== 'production',
     },
     resolve: {
         alias: {
-            '@main': path.join(__dirname, '../src/main')
+            '@main': path.join(__dirname, '../src/main'),
         },
-        extensions: ['.js', '.json', '.node']
+        extensions: ['.js', '.json', '.node'],
     },
     plugins: [
         new webpack.ProgressPlugin(),
         new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(env)
-        })
-    ]
+            'process.env.NODE_ENV': JSON.stringify(env),
+        }),
+    ],
 };
 const dev = webpackMerge(common, {
     entry: {
-        main: path.join(__dirname, '../src/main/index.dev.js')
+        main: path.join(__dirname, '../src/main/index.dev.js'),
     },
     cache: true,
     devtool: 'eval-source-map',
     plugins: [
         new webpack.NamedModulesPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
-    ]
+        new webpack.NoEmitOnErrorsPlugin(),
+    ],
 });
 const prod = webpackMerge(common, {
     entry: {
-        main: path.join(__dirname, '../src/main/index.js')
+        main: path.join(__dirname, '../src/main/index.js'),
     },
     plugins: [
         new CopyWebpackPlugin([
@@ -84,21 +84,25 @@ const prod = webpackMerge(common, {
                 to: path.join(
                     __dirname,
                     '../dist/third-party/visualmetrics/visualmetrics.py'
-                )
-            }
+                ),
+            },
+            {
+                from: path.join(__dirname, '../src/main/help.html'),
+                to: path.join(__dirname, '../dist/help.html'),
+            },
         ]),
         new BabiliWebpackPlugin({
             removeConsole: true,
-            removeDebugger: true
+            removeDebugger: true,
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.LoaderOptionsPlugin({
             minimize: true,
-            debug: false
-        })
+            debug: false,
+        }),
     ],
-    bail: true
+    bail: true,
 });
 
 let conf;

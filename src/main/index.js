@@ -15,6 +15,8 @@ function createWindow() {
         height: 640,
         width: 1024,
         useContentSize: true,
+        fullscreenable: false,
+        minimizable: false,
         webPreferences: {
             webSecurity: false,
         },

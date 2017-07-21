@@ -6,6 +6,15 @@ import { ipcMain } from 'electron';
 import concat from 'concat-stream';
 import logger from './logger.js';
 
+logger.debug("process env: '%j'", process.env);
+logger.debug("node version: '%j'", process.versions);
+
+const spawnEnv = Object.assign({}, process.env, {
+    PATH: `/usr/local/bin:${process.env.PATH}`
+});
+
+logger.debug("spawn env: '%j'", spawnEnv);
+
 /**
  *  event name format
  *      - listener : category : event
@@ -116,7 +125,9 @@ class AbstractVirtualMetricsTask {
             this.id,
             this.args.join(' ')
         );
-        this.childProcess = spawn('python2', this.args);
+        this.childProcess = spawn('python2', this.args, {
+            env: spawnEnv
+        });
         this.childProcess.stdout.pipe(concat(this._handleStdout.bind(this)));
         this.childProcess.stderr.pipe(concat(this._handleStderr.bind(this)));
         this.childProcess.on('error', this._handleOnError.bind(this));

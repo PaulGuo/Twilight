@@ -61,9 +61,6 @@
 
 <template>
     <div class="result">
-        <div class="close" @click="back">
-            <i class="icon">x</i>
-        </div>
         <div class="speed">
             <div class="si">
                 <span>SI</span>

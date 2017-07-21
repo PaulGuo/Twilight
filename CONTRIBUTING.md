@@ -15,8 +15,8 @@ npm run dev
 ## Build
 
 ```bash
-npm run build:pack
-npm run build:dist
+npm run pack
+npm run dist
 ```
 
 ### Build Process

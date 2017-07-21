@@ -11,8 +11,9 @@ const winURL =
         ? `http://localhost:9080/renderer.html`
         : `file://${__dirname}/renderer.html`;
 
+let mainWindow = null;
 function createWindow() {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         height: 640,
         width: 1024,
         useContentSize: true,
@@ -23,14 +24,25 @@ function createWindow() {
         }
     });
 
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+
     logger.debug('load url: "%s"', winURL);
     mainWindow.loadURL(winURL);
 }
 
 app.setName('Twilight');
+
 app.on('ready', () => {
     Menu.setApplicationMenu(initMenu());
     createWindow();
     initVisualMetrics();
     initState();
+});
+
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow();
+    }
 });

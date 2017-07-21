@@ -30,19 +30,30 @@ import logger from './logger.js';
  *          - renderer:visual-metrics-analyse:analyse-failure, taskId, error
  */
 
-let visualMetricPath;
+let visualMetricsPath;
 if (process.env.NODE_ENV === 'development') {
-    visualMetricPath = path.resolve(
+    visualMetricsPath = path.resolve(
         __dirname,
         '../third-party/visualmetrics/visualmetrics.py'
     );
 } else {
-    visualMetricPath = path.resolve(
+    visualMetricsPath = path.resolve(
         process.resourcesPath,
         './third-party/visualmetrics/visualmetrics.py'
     );
 }
-logger.debug('visualmetrics path: "%s"', visualMetricPath);
+logger.debug('visualmetrics path: "%s"', visualMetricsPath);
+
+class Deferred {
+    constructor() {
+        const p = new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+        this.then = p.then.bind(p);
+        this.catch = p.catch.bind(p);
+    }
+}
 
 const genTmpdir = id => {
     const prefix = path.join(os.tmpdir(), `visualmetrics-`);
@@ -60,17 +71,20 @@ class AbstractVirtualMetricsTask {
     //      - failure
     // - stopped <- stop waiting/running
     constructor(videoFile, id) {
+        this.task = new Deferred();
         this.id = id;
-        this.file = videoFile;
-        this.childProcess = null;
         this.status = 'waiting';
+        this.childProcess = null;
+        this.file = videoFile;
         this.tmpdir = genTmpdir(id);
     }
 
     start() {
-        const p = new Promise(resolve => {
+        const p = new Promise((resolve, reject) => {
             if (this.status === 'waiting') {
-                resolve(this._spawn());
+                this.spawn();
+                this.task.then(resolve);
+                this.task.catch(reject);
             } else {
                 throw new Error(`start: current status is ${this.status}`);
             }
@@ -95,97 +109,91 @@ class AbstractVirtualMetricsTask {
                 break;
         }
     }
+
+    spawn() {
+        logger.debug(
+            'task "%s" | extract | spawn arg: "%s"',
+            this.id,
+            this.args.join(' ')
+        );
+        this.childProcess = spawn('python2', this.args);
+        this.childProcess.stdout.pipe(concat(this._handleStdout.bind(this)));
+        this.childProcess.stderr.pipe(concat(this._handleStderr.bind(this)));
+        this.childProcess.on('error', this._handleOnError.bind(this));
+        this.childProcess.on('close', this._handleOnClose.bind(this));
+    }
+
+    _handleStdout(buf) {
+        logger.debug('task "%s" | stdout: "%s"', this.id, buf.toString());
+    }
+    _handleStderr(buf) {
+        logger.debug('task "%s" | stderr: "%s"', this.id, buf.toString());
+    }
+    _handleOnClose(code, signal) {
+        logger.debug(
+            'task "%s" | close | code: "%s" | signal: "%s"',
+            this.id,
+            code,
+            signal
+        );
+        if (code !== 0) {
+            this.task.reject(
+                new Error(`closed with error code ${code}, signal ${signal}`)
+            );
+        }
+    }
+    _handleOnError(err) {
+        logger.debug(
+            'task "%s" | error | err: "%s\n%s"',
+            this.id,
+            err.message,
+            err.stack
+        );
+        this.task.reject(err);
+    }
 }
 
 class VisualMetricsExtractTask extends AbstractVirtualMetricsTask {
     constructor(videoFile, id) {
         super(videoFile, id);
+        this.args = [
+            visualMetricsPath,
+            '--video',
+            this.file,
+            '--dir',
+            this.tmpdir
+        ];
     }
-
-    _spawn() {
-        return new Promise((resolve, reject) => {
-            const args = [
-                visualMetricPath,
-                '--video',
-                this.file,
-                '--dir',
-                this.tmpdir
-            ];
-            logger.debug(
-                'task "%s" | extract | spawn arg: "%s"',
-                this.id,
-                args.join(' ')
-            );
-            this.childProcess = spawn('python2', args);
-
-            this.childProcess.stdout.pipe(
-                concat(buf => {
+    _handleOnClose(code, signal) {
+        logger.debug(
+            'task "%s" | close | code: "%s" | signal: "%s"',
+            this.id,
+            code,
+            signal
+        );
+        if (code === 0) {
+            fs.readdir(this.tmpdir, (err, files) => {
+                if (err) {
                     logger.debug(
-                        'task "%s" | stdout: "%s"',
+                        'task "%s" | readdir | err: "%s\n%s"',
                         this.id,
-                        buf.toString()
+                        err.message,
+                        err.stack
                     );
-                })
-            );
-
-            this.childProcess.stderr.pipe(
-                concat(buf => {
-                    logger.debug(
-                        'task "%s" | stderr: "%s"',
-                        this.id,
-                        buf.toString()
-                    );
-                })
-            );
-
-            this.childProcess.on('error', err => {
-                logger.debug(
-                    'task "%s" | error | err: "%s\n%s"',
-                    this.id,
-                    err.message,
-                    err.stack
-                );
-                reject(err);
-            });
-
-            this.childProcess.on('close', (code, signal) => {
-                logger.debug(
-                    'task "%s" | close | code: "%s" | signal: "%s"',
-                    this.id,
-                    code,
-                    signal
-                );
-                if (code === 0) {
-                    fs.readdir(this.tmpdir, (err, files) => {
-                        if (err) {
-                            logger.debug(
-                                'task "%s" | readdir | err: "%s\n%s"',
-                                this.id,
-                                err.message,
-                                err.stack
-                            );
-                            reject(err);
-                        } else {
-                            logger.debug(
-                                'task "%s" | images: "%j"',
-                                this.task,
-                                files
-                            );
-                            const imageList = files.map(file =>
-                                path.join(this.tmpdir, file)
-                            );
-                            resolve(imageList);
-                        }
-                    });
+                    this.task.reject(err);
                 } else {
-                    reject(
-                        new Error(
-                            `closed with error code ${code}, signal ${signal}`
-                        )
+                    logger.debug('task "%s" | images: "%j"', this.task, files);
+                    const imageList = files.map(file =>
+                        path.join(this.tmpdir, file)
                     );
+                    this.task.resolve(imageList);
                 }
             });
-        });
+        } else {
+            this.task.reject(
+                new Error(`closed with error code ${code}, signal ${signal}`)
+            );
+        }
     }
 }
 
@@ -194,85 +202,36 @@ class VisualMetricsAnalyseTask extends AbstractVirtualMetricsTask {
         super(videoFile, id);
         this.startTime = startTime;
         this.endTime = endTime;
+        this.args = [
+            visualMetricsPath,
+            '--video',
+            this.file,
+            '--dir',
+            this.tmpdir,
+            '--start',
+            this.startTime,
+            '--end',
+            this.endTime,
+            '--perceptual',
+            '--json'
+        ];
     }
 
-    _spawn() {
-        return new Promise((resolve, reject) => {
-            const args = [
-                visualMetricPath,
-                '--video',
-                this.file,
-                '--dir',
-                this.tmpdir,
-                '--start',
-                this.startTime,
-                '--end',
-                this.endTime,
-                '--perceptual',
-                '--json'
-            ];
-            logger.debug('extract task | spawn arg: "%s"', args.join(' '));
-            this.childProcess = spawn('python2', args);
-
-            this.childProcess.stdout.pipe(
-                concat(buf => {
-                    const json = buf.toString();
-                    logger.debug(
-                        'task "%s" | stdout: "%s"',
-                        this.id,
-                        buf.toString()
-                    );
-                    try {
-                        const value = JSON.parse(json);
-                        resolve(value);
-                    } catch (err) {
-                        logger.debug(
-                            'task "%s" | stdout is not valid json | err: "%s\n%s"',
-                            this.id,
-                            err.message,
-                            err.stack
-                        );
-                        reject(err);
-                    }
-                })
+    _handleStdout(buf) {
+        const json = buf.toString();
+        logger.debug('task "%s" | stdout: "%s"', this.id, buf.toString());
+        try {
+            const value = JSON.parse(json);
+            this.task.resolve(value);
+        } catch (err) {
+            logger.debug(
+                'task "%s" | stdout is not valid json | err: "%s\n%s"',
+                this.id,
+                err.message,
+                err.stack
             );
-
-            this.childProcess.stderr.pipe(
-                concat(buf => {
-                    logger.debug(
-                        'task "%s" | stderr: "%s"',
-                        this.id,
-                        buf.toString()
-                    );
-                })
-            );
-
-            this.childProcess.on('error', err => {
-                logger.debug(
-                    'task "%s" | error | err: "%s\n%s"',
-                    this.id,
-                    err.message,
-                    err.stack
-                );
-                reject(err);
-            });
-
-            this.childProcess.on('close', (code, signal) => {
-                logger.debug(
-                    'task "%s" | close | code: "%s" | signal: "%s"',
-                    this.id,
-                    code,
-                    signal
-                );
-                if (code !== 0) {
-                    reject(
-                        new Error(
-                            `closed with error code ${code}, signal ${signal}`
-                        )
-                    );
-                }
-            });
-        });
+            this.task.reject(err);
+        }
     }
 }
 

@@ -2,23 +2,17 @@
 
 > Visual Metrics GUI
 
-#### Build Setup
+## Requirements
+
+- **[ffmpeg](https://www.ffmpeg.org/)**: Required for video extraction
+- **[compare](http://www.imagemagick.org/)**: Part of [Imagemagick](http://www.imagemagick.org/)
+- **[convert](http://www.imagemagick.org/)**: Part of [Imagemagick](http://www.imagemagick.org/)
+- **[Pillow](https://github.com/python-pillow/Pillow)**: Python imaging library
+- **[pyssim](https://github.com/jterrace/pyssim)**: Python module for Structural Similarity Image Metric (SSIM)
+
+### For MAC
 
 ```bash
-# serve with hot reload at localhost:9080
-yarn run dev
-
-# build electron application for production
-yarn run build:pack
-yarn run build:dist
-```
-
-#### Build Process
-
-```
-src
-↓ webpack
-dist
-↓ electron-builder
-app
+brew install ffmpeg imagemagick
+pip2 install Pillow pyssim
 ```

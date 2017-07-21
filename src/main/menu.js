@@ -16,7 +16,7 @@ const openHelpWindow = () => {
         resizable: false,
         title: 'help',
         minimizable: false,
-        fullscreenable: false,
+        fullscreenable: false
     });
 
     helpWindow.loadURL(helpURL);
@@ -29,43 +29,6 @@ const openHelpWindow = () => {
 const init = () => {
     const template = [
         {
-            label: 'Edit',
-            submenu: [
-                { role: 'cut' },
-                { role: 'copy' },
-                { role: 'paste' },
-                { role: 'pasteandmatchstyle' },
-                { role: 'delete' },
-                { role: 'selectall' },
-            ],
-        },
-        {
-            label: 'View',
-            submenu: [
-                { role: 'reload' },
-                { role: 'forcereload' },
-                { role: 'toggledevtools' },
-            ],
-        },
-        {
-            role: 'window',
-            submenu: [{ role: 'minimize' }, { role: 'close' }],
-        },
-        {
-            role: 'help',
-            submenu: [
-                {
-                    label: 'Usage Help',
-                    click() {
-                        openHelpWindow();
-                    },
-                },
-            ],
-        },
-    ];
-
-    if (process.platform === 'darwin') {
-        template.unshift({
             label: 'Twilight',
             submenu: [
                 { role: 'about' },
@@ -74,23 +37,60 @@ const init = () => {
                 { role: 'hideothers' },
                 { role: 'unhide' },
                 { type: 'separator' },
-                { role: 'quit' },
-            ],
+                { role: 'quit' }
+            ]
+        },
+        {
+            label: 'Edit',
+            submenu: [
+                { role: 'cut' },
+                { role: 'copy' },
+                { role: 'paste' },
+                { role: 'pasteandmatchstyle' },
+                { role: 'delete' },
+                { role: 'selectall' },
+                { type: 'separator' },
+                {
+                    label: 'Speech',
+                    submenu: [
+                        { role: 'startspeaking' },
+                        { role: 'stopspeaking' }
+                    ]
+                }
+            ]
+        },
+        {
+            role: 'window',
+            submenu: [
+                { role: 'close' },
+                { role: 'minimize' },
+                { role: 'zoom' },
+                { type: 'separator' },
+                { role: 'front' }
+            ]
+        },
+        {
+            role: 'help',
+            submenu: [
+                {
+                    label: 'Usage Help',
+                    click() {
+                        openHelpWindow();
+                    }
+                }
+            ]
+        }
+    ];
+
+    if (process.env.NODE_ENV === 'development') {
+        template.push({
+            label: 'View',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forcereload' },
+                { role: 'toggledevtools' }
+            ]
         });
-        template[1].submenu.push(
-            { type: 'separator' },
-            {
-                label: 'Speech',
-                submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
-            },
-        );
-        template[3].submenu = [
-            { role: 'close' },
-            { role: 'minimize' },
-            { role: 'zoom' },
-            { type: 'separator' },
-            { role: 'front' },
-        ];
     }
 
     const menu = Menu.buildFromTemplate(template);

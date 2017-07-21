@@ -84,7 +84,7 @@ export default {
                 'renderer:visual-metrics-extract:analyse-failure',
                 (event, tid, err) => {
                     console.log(err);
-                    alert(err);
+                    alert('Twilight requires `FFmpeg/ImageMagick/Pillow/pyssim` to run');
                     this.goBack();
                 },
             );

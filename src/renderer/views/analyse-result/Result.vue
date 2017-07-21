@@ -1,47 +1,42 @@
 <style scoped lang="scss">
-    .result {
-        height: 100%;
-        width: 100%;
+.result {
+  height: 100%;
+  width: 100%;
+}
+
+.speed {
+  height: 100px;
+  display: flex;
+  font-size: 30px;
+
+  div {
+    flex: 1;
+    text-align: center;
+    align-self: center;
+  }
+}
+
+.visual {
+  height: 100px;
+  display: flex;
+  font-size: 28px;
+
+  div {
+    flex: 1;
+    text-align: center;
+    align-self: center;
+    span {
+      display: block;
     }
+  }
+}
 
-    .speed {
-        height: 100px;
-        display: flex;
-        font-size: 30px;
-
-        div {
-            flex: 1;
-            text-align: center;
-            align-self: center;
-        }
-    }
-
-    .visual {
-        height: 100px;
-        display: flex;
-        font-size: 28px;
-
-        div {
-            flex: 1;
-            text-align: center;
-            align-self: center;
-            span {
-                display: block;
-            }
-        }
-    }
-
-    .chart {
-        width: 100%;
-        height: calc(100% - 100px - 100px);
-        padding: 10px 20px;
-        background: #ECF0F1;
-
-        .canvas {
-            width: 100%;
-            height: 100%;
-        }
-    }
+.chart {
+  width: 100%;
+  height: calc(100% - 100px - 100px);
+  padding: 10px 20px;
+  background: #ecf0f1;
+}
 </style>
 
 <template>
@@ -75,7 +70,7 @@
             </div>
         </div>
         <div class="chart">
-            <canvas ref="canvas" class="canvas"></canvas>
+            <canvas ref="canvas" class="canvas" width="980" height="420"></canvas>
         </div>
     </div>
 </template>
@@ -109,7 +104,6 @@ export default {
                             label: 'SI',
                             yAxisID: 'y-si',
                             data: dataSI,
-                            //backgroundColor: '#E74C3C',
                             backgroundColor: 'rgba(231,76,60,.5)',
                         },
                         {
@@ -117,7 +111,6 @@ export default {
                             label: 'PSI',
                             yAxisID: 'y-psi',
                             data: dataPSI,
-                            //backgroundColor: '#3498DB',
                             backgroundColor: 'rgba(52,152,219,.5)',
                         },
                     ],
@@ -149,6 +142,8 @@ export default {
                                 type: 'time',
                                 time: {
                                     unit: 'millisecond',
+                                    round: 'true',
+                                    min: 0,
                                     displayFormats: {
                                         millisecond: 'x',
                                         second: 'x',

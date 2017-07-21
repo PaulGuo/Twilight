@@ -75,6 +75,9 @@ export default {
                     result.FMP = frames.FMP - frames.START;
                     result.FirstVisualChange = result.FirstVisualChange - frames.START;
                     result.LastVisualChange = result.LastVisualChange - frames.START;
+                    result.SpeedIndexChart = result.SpeedIndexChart.map(x => [x[0] - frames.START, x[1]]);
+                    result.PerceptualSpeedIndexChart = result.PerceptualSpeedIndexChart.map(x => [x[0] - frames.START, x[1]]);
+                    result.PerceptualSpeedIndexChart.unshift([0, 0]);
                     this.$state.set('result', result);
                     this.showResult(result);
                 },

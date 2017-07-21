@@ -1,76 +1,85 @@
 <style scoped lang="scss">
-    .choose {
-        height: 100%;
-        width: 100%;
+.choose {
+  height: 100%;
+  width: 100%;
+}
+
+.box-group {
+  height: calc(100% - 135px - 80px);
+  display: flex;
+
+  .box {
+    flex: 1;
+    text-align: center;
+    align-self: center;
+
+    img {
+      max-width: 240px;
+      max-height: 360px;
+      box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.4);
     }
 
-    .box-group {
-        height: calc(100% - 120px - 80px);
-        display: flex;
+    .placeholder {
+      display: inline-block;
+      width: 200px;
+      height: 300px;
+      border: 3px dashed #fff;
+      border-radius: 6px;
 
-        .box {
-            flex: 1;
-            text-align: center;
-            align-self: center;
-
-            img {
-                max-width: 240px;
-                max-height: 360px;
-                box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.4);
-            }
-
-            .placeholder {
-                display: inline-block;
-                width: 200px;
-                height: 300px;
-                border: 3px dashed #fff;
-                border-radius: 6px;
-
-                i {
-                    font-size: 28px;
-                    color: #fff;
-                    width: 200px;
-                    height: 300px;
-                    line-height: 300px;
-                    text-align: center;
-                }
-            }
-
-            .frame-title {
-                margin: 10px 0;
-            }
-        }
-    }
-
-    .gallery {
-        width: 100%;
-        height: 120px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        background: #ECF0F1;
-
-        ul {
-            display: block;
-            width: -webkit-max-content;
-        }
-
-        li {
-            display: inline-block;
-            height: 100px;
-            margin: 10px;
-            box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.4);
-        }
-
-        img {
-            height: 100px;
-        }
-    }
-
-    .controls {
+      i {
+        font-size: 28px;
+        color: #fff;
+        width: 200px;
+        height: 300px;
+        line-height: 300px;
         text-align: center;
-        height: 80px;
-        padding: 22px 0;
+      }
     }
+
+    .frame-title {
+      margin: 10px 0;
+    }
+  }
+}
+
+.gallery {
+  width: 100%;
+  overflow-x: auto;
+  height: 135px;
+  background: #ecf0f1;
+
+  ul {
+    display: block;
+    width: -webkit-max-content;
+  }
+
+  li {
+    display: inline-block;
+    height: 115px;
+    margin: 10px;
+
+    span {
+      text-align: center;
+      color: #34495e;
+      display: block;
+      height: 10px;
+      line-height: 10px;
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    img {
+      height: 100px;
+      box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.4);
+    }
+  }
+}
+
+.controls {
+  text-align: center;
+  height: 80px;
+  padding: 22px 0;
+}
 </style>
 
 <template>
@@ -96,6 +105,7 @@
         <div class="gallery">
             <ul>
                 <li v-for="(img, idx) in images">
+                    <span class="">{{imgToTime(img)}}</span>
                     <img draggable="true"
                     @dragstart="drag($event, img)"
                     :src="'file://' + img"
@@ -107,6 +117,7 @@
 </template>
 
 <script>
+    import dateFormatter from './date-formatter.js';
 export default {
     props: {
         stop: {
@@ -161,6 +172,19 @@ export default {
                 return;
             }
             this.start(this.frames);
+        },
+
+        _extract_time(frame) {
+            const pattern = /ms_(\d+)\.\w+$/;
+            const matched = pattern.exec(frame);
+            if (!matched || !matched[1]) return null;
+            return Number(matched[1]);
+        },
+
+        imgToTime(img) {
+            const ms = this._extract_time(img);
+            const text = dateFormatter(ms, 'mm:ss.SSS');
+            return text;
         },
     },
 };

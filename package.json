@@ -36,7 +36,8 @@
             ]
         },
         "mac": {
-            "identity": null
+            "identity": null,
+            "icon": "src/main/icons/icon.icns"
         }
     },
     "dependencies": {

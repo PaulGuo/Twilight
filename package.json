@@ -12,8 +12,8 @@
         "dev": "make dev"
     },
     "build": {
-        "productName": "twilight",
-        "appId": "twilight",
+        "productName": "Twilight",
+        "appId": "Twilight",
         "directories": {
             "output": "app"
         },

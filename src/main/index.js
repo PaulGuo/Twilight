@@ -1,6 +1,7 @@
 'use strict';
 
-import { app, BrowserWindow } from 'electron';
+import { app, Menu, BrowserWindow } from 'electron';
+import initMenu from './menu.js';
 import initVisualMetrics from './visual-metrics.js';
 import initState from './state.js';
 
@@ -15,14 +16,16 @@ function createWindow() {
         width: 1024,
         useContentSize: true,
         webPreferences: {
-            webSecurity: false
-        }
+            webSecurity: false,
+        },
     });
 
     mainWindow.loadURL(winURL);
 }
 
+app.setName('Twilight');
 app.on('ready', () => {
+    Menu.setApplicationMenu(initMenu());
     createWindow();
     initVisualMetrics();
     initState();

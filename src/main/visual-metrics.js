@@ -182,7 +182,7 @@ class VisualMetricsExtractTask extends AbstractVirtualMetricsTask {
                     );
                     this.task.reject(err);
                 } else {
-                    logger.debug('task "%s" | images: "%j"', this.task, files);
+                    logger.debug('task "%s" | images: "%j"', this.id, files);
                     const imageList = files.map(file =>
                         path.join(this.tmpdir, file)
                     );

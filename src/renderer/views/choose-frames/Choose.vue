@@ -50,7 +50,7 @@
 
         ul {
             display: block;
-            width: -webkit-max-content;
+            width: max-content;
         }
 
         li {

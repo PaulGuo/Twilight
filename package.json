@@ -1,6 +1,6 @@
 {
     "name": "twilight",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "author": "badkaikai@gmail.com",
     "description": "Visual Metrics GUI",
     "license": null,
@@ -20,10 +20,12 @@
         "files": [
             "dist/**/*"
         ],
-        "extraResources": [{
-            "from": "src/third-party/",
-            "to": "third-party/"
-        }],
+        "extraResources": [
+            {
+                "from": "src/third-party/",
+                "to": "third-party/"
+            }
+        ],
         "dmg": {
             "contents": [
                 {

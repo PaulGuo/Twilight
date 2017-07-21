@@ -1,9 +1,11 @@
-import process from 'process';
 import { Menu, BrowserWindow } from 'electron';
 import path from 'path';
+import logger from './logger.js';
 
 let helpWindow = null;
 const helpURL = 'file://' + path.resolve(__dirname, 'help.html');
+logger.debug('help url: "%s"', helpURL);
+
 const openHelpWindow = () => {
     if (helpWindow) {
         helpWindow.focus();

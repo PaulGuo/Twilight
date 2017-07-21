@@ -4,6 +4,7 @@ import { app, Menu, BrowserWindow } from 'electron';
 import initMenu from './menu.js';
 import initVisualMetrics from './visual-metrics.js';
 import initState from './state.js';
+import logger from './logger.js';
 
 const winURL =
     process.env.NODE_ENV === 'development'
@@ -18,10 +19,11 @@ function createWindow() {
         fullscreenable: false,
         minimizable: false,
         webPreferences: {
-            webSecurity: false,
-        },
+            webSecurity: false
+        }
     });
 
+    logger.debug('load url: "%s"', winURL);
     mainWindow.loadURL(winURL);
 }
 

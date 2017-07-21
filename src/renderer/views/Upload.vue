@@ -1,77 +1,84 @@
-<style lang="scss">
-    #upload {
-        .video-uploader .el-upload {
-            border: 3px dashed #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
+<style scoped lang="scss">
+.wrapper {
+  height: 100%;
+}
 
-        .video-uploader .el-upload:hover {
-            border-color: #3498DB;
-        }
+.video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-        .video-uploader-icon {
-            font-size: 28px;
-            color: #fff;
-            width: 378px;
-            height: 278px;
-            line-height: 278px;
-            text-align: center;
-        }
+  .video-content {
+    box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
+    max-width: 320px;
+    max-height: 480px;
+  }
+
+  .video-btns {
+    text-align: center;
+    margin-top: 25px;
+  }
+}
+
+.upload {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .title {
+    text-align: center;
+    margin-bottom: 25px;
+    opacity: 0.3;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-family: "Hiragino Kaku Gothic ProN";
+    opacity: 0.5;
+  }
+
+  .upload-container {
+    display: block;
+    position: relative;
+    width: 300px;
+    height: 400px;
+    border: 3px dashed #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 50px;
+
+    input {
+      visibility: hidden;
+      display: block;
+      width: 0;
+      height: 0;
     }
-</style>
 
-<style scoped>
-    #upload {
-        height: 100%;
+    .icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
-
-    .upload-container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .video {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .video-content {
-        box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.4);
-        max-width: 320px;
-        max-height: 480px;
-    }
-
-    .video-btns {
-        text-align: center;
-        margin-top: 25px;
-    }
-
-    .upload-container-title {
-        text-align: center;
-        margin-bottom: 25px;
-        opacity: 0.3;
-    }
-
-    .footer {
-        position: absolute;
-        bottom: 15px;
-        width: 100%;
-        text-align: center;
-        font-size: 13px;
-        font-family: "Hiragino Kaku Gothic ProN";
-        opacity: 0.5;
-    }
+  }
+}
 </style>
 
 <template>
-    <div id="upload">
+    <div class="wrapper">
         <div v-if="video" class="video">
             <video class="video-content" controls muted :src="'file://' + video"></video>
             <div class="video-btns">
@@ -79,19 +86,17 @@
                 <el-button type="primary" @click="upload">开始分析</el-button>
             </div>
         </div>
-        <div v-else class="upload-container">
-            <h1 class="upload-container-title">DRAG SCREEN RECORD HERE</h1>
-            <el-upload class="video-uploader"
-                accept="video/*"
-                action="/"
-                type="drag"
-                :multiple="false"
-                :before-upload="beforeUpload">
-                <i class="el-icon-plus video-uploader-icon"></i>
-            </el-upload>
-        </div>
-        <div class="footer">
-            ♥ Design and Implementation by PaulGuo and niris
+        <div v-else class="upload">
+            <div class="form">
+                <h1 class="title">DRAG SCREEN RECORD HERE</h1>
+                <label class="upload-container">
+                    <input type="file" accept="video/*" @change="inputChange">
+                    <i class="icon">+</i>
+                </label>
+            </div>
+            <div class="footer">
+                ♥ Design and Implementation by PaulGuo and niris
+            </div>
         </div>
     </div>
 </template>
@@ -104,9 +109,12 @@ export default {
         };
     },
     methods: {
-        beforeUpload(file) {
-            this.video = file.path;
-            return false;
+        inputChange(event) {
+            const files = event.target.files;
+            if (files.length) {
+                const file = files[0];
+                this.video = file.path;
+            }
         },
         upload() {
             this.$state.set('video', this.video);
@@ -115,6 +123,32 @@ export default {
         cleanup() {
             this.video = null;
         },
+        onOver(event) {
+            event.preventDefault();
+        },
+        onDrop(event) {
+            event.preventDefault();
+            const dt = event.dataTransfer;
+            if (dt.files && dt.files.length) {
+                const file = dt.files[0];
+                this.video = file.path;
+            }
+        },
+        initDragDrop() {
+            document.addEventListener('dragover', this.onOver);
+            document.addEventListener('drop', this.onDrop);
+        },
+        removeDragDrop() {
+            document.removeEventListener('dragover', this.onOver);
+            document.removeEventListener('drop', this.onDrop);
+        },
+    },
+    mounted() {
+        this.initDragDrop();
+    },
+
+    destroyed() {
+        this.removeDragDrop();
     },
 };
 </script>

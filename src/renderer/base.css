@@ -24,9 +24,8 @@ body {
   font-size: 100%;
   font-style: normal;
   font-weight: normal;
-  font-family: 'Helvetica Neue', 'Roboto', 'PingFang SC', 'Noto Sans CJK SC',
-    sans-serif;
-  font-family: "Hiragino Kaku Gothic ProN", "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Helvetica Neue', 'Luxi Sans',
+    'DejaVu Sans', 'Tahoma', 'Hiragino Sans GB', 'STHeiti', sans-serif;
   text-rendering: optimizeLegibility;
 }
 
@@ -69,6 +68,7 @@ td {
 }
 
 /******/
+
 body {
   background: #1abc9c;
   color: #fff;

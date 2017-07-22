@@ -1,67 +1,48 @@
-'use strict'
+'use strict';
 
-import { app, BrowserWindow } from 'electron'
+import { app, Menu, BrowserWindow } from 'electron';
+import initMenu from './menu.js';
+import initVisualMetrics from './visual-metrics.js';
+import initState from './state.js';
+import logger from './logger.js';
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
-if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+const winURL =
+    process.env.NODE_ENV === 'development'
+        ? `http://localhost:9080/renderer.html`
+        : `file://${__dirname}/renderer.html`;
+
+let mainWindow = null;
+function createWindow() {
+    mainWindow = new BrowserWindow({
+        height: 640,
+        width: 1024,
+        useContentSize: true,
+        fullscreenable: false,
+        minimizable: false,
+        webPreferences: {
+            webSecurity: false
+        }
+    });
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+
+    logger.debug('load url: "%s"', winURL);
+    mainWindow.loadURL(winURL);
 }
 
-let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
-
-function createWindow () {
-  /**
-   * Initial window options
-   */
-  mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000
-  })
-
-  mainWindow.loadURL(winURL)
-
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-}
-
-app.on('ready', createWindow)
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
+app.setName('Twilight');
 
 app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
+    Menu.setApplicationMenu(initMenu());
+    createWindow();
+    initVisualMetrics();
+    initState();
+});
+
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow();
+    }
+});

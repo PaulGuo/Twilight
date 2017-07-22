@@ -1,0 +1,26 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "6db9b8599a6c9c19bd7022c0472c0f78a18c0f46864c8e63b2057597bfac4cde"
+        },
+        "requires": {},
+        "sources": [
+            {
+                "url": "https://pypi.tuna.tsinghua.edu.cn/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "olefile": {
+            "version": "==0.44"
+        },
+        "pillow": {
+            "version": "==4.2.1"
+        },
+        "pyssim": {
+            "version": "==0.3"
+        }
+    },
+    "develop": {}
+}

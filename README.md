@@ -1,28 +1,27 @@
-# twilight
+# Twilight
 
 > Visual Metrics GUI
 
-#### Build Setup
+## Requirements
 
-``` bash
-# install dependencies
-npm install
+- **[ffmpeg](https://www.ffmpeg.org/)**: Required for video extraction
+- **[compare](http://www.imagemagick.org/)**: Part of [Imagemagick](http://www.imagemagick.org/)
+- **[convert](http://www.imagemagick.org/)**: Part of [Imagemagick](http://www.imagemagick.org/)
+- **[Pillow](https://github.com/python-pillow/Pillow)**: Python imaging library
+- **[pyssim](https://github.com/jterrace/pyssim)**: Python module for Structural Similarity Image Metric (SSIM)
 
-# serve with hot reload at localhost:9080
-npm run dev
+### For MAC
 
-# build electron application for production
-npm run build
-
-# run unit & end-to-end tests
-npm test
-
-
-# lint all JS/Vue component files in `src/`
-npm run lint
-
+```bash
+brew install ffmpeg imagemagick
+pip2 install Pillow pyssim
 ```
 
----
+### Usage
 
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
+- Step 1: Record the Video and Upload
+- Step 2: Choose the Key Frames
+	- Start, FCP, FMP, End Point
+- Step 3: Click the Button and then Get the Report
+
+![image](https://user-images.githubusercontent.com/758740/28420730-a39a7704-6d95-11e7-9adb-97c0953d785f.png)

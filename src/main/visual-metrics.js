@@ -9,12 +9,6 @@ import logger from './logger.js';
 logger.debug("process env: '%j'", process.env);
 logger.debug("node version: '%j'", process.versions);
 
-const spawnEnv = Object.assign({}, process.env, {
-    PATH: `/usr/local/bin:${process.env.PATH}`
-});
-
-logger.debug("spawn env: '%j'", spawnEnv);
-
 /**
  *  event name format
  *      - listener : category : event
@@ -40,18 +34,31 @@ logger.debug("spawn env: '%j'", spawnEnv);
  */
 
 let visualMetricsPath;
+let pythonUserBase;
 if (process.env.NODE_ENV === 'development') {
     visualMetricsPath = path.resolve(
         __dirname,
         '../third-party/visualmetrics/visualmetrics.py'
     );
+    pythonUserBase = path.resolve(__dirname, '../third-party/python-dep');
 } else {
     visualMetricsPath = path.resolve(
         process.resourcesPath,
         './third-party/visualmetrics/visualmetrics.py'
     );
+    pythonUserBase = path.resolve(
+        process.resourcesPath,
+        './third-party/python-dep'
+    );
 }
 logger.debug('visualmetrics path: "%s"', visualMetricsPath);
+
+const spawnEnv = Object.assign({}, process.env, {
+    PATH: `/usr/local/bin:${process.env.PATH}`,
+    PYTHONUSERBASE: pythonUserBase
+});
+
+logger.debug("spawn env: '%j'", spawnEnv);
 
 class Deferred {
     constructor() {

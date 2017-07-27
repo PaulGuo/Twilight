@@ -82,8 +82,8 @@
         <div v-if="video" class="video">
             <video class="video-content" controls muted :src="'file://' + video"></video>
             <div class="video-btns">
-                <el-button @click="cleanup">重新选择</el-button>
-                <el-button type="primary" @click="upload">开始分析</el-button>
+                <button @click="cleanup">重新选择</button>
+                <button class="btn-primary" @click="upload">开始分析</button>
             </div>
         </div>
         <div v-else class="upload">
@@ -102,53 +102,53 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            video: null,
-        };
-    },
-    methods: {
-        inputChange(event) {
-            const files = event.target.files;
-            if (files.length) {
-                const file = files[0];
-                this.video = file.path;
+    export default {
+        data() {
+            return {
+                video: null
+            };
+        },
+        methods: {
+            inputChange(event) {
+                const files = event.target.files;
+                if (files.length) {
+                    const file = files[0];
+                    this.video = file.path;
+                }
+            },
+            upload() {
+                this.$state.set('video', this.video);
+                this.$router.push('choose-frames');
+            },
+            cleanup() {
+                this.video = null;
+            },
+            onOver(event) {
+                event.preventDefault();
+            },
+            onDrop(event) {
+                event.preventDefault();
+                const dt = event.dataTransfer;
+                if (dt.files && dt.files.length) {
+                    const file = dt.files[0];
+                    this.video = file.path;
+                }
+            },
+            initDragDrop() {
+                document.addEventListener('dragover', this.onOver);
+                document.addEventListener('drop', this.onDrop);
+            },
+            removeDragDrop() {
+                document.removeEventListener('dragover', this.onOver);
+                document.removeEventListener('drop', this.onDrop);
             }
         },
-        upload() {
-            this.$state.set('video', this.video);
-            this.$router.push('choose-frames');
+        mounted() {
+            this.initDragDrop();
         },
-        cleanup() {
-            this.video = null;
-        },
-        onOver(event) {
-            event.preventDefault();
-        },
-        onDrop(event) {
-            event.preventDefault();
-            const dt = event.dataTransfer;
-            if (dt.files && dt.files.length) {
-                const file = dt.files[0];
-                this.video = file.path;
-            }
-        },
-        initDragDrop() {
-            document.addEventListener('dragover', this.onOver);
-            document.addEventListener('drop', this.onDrop);
-        },
-        removeDragDrop() {
-            document.removeEventListener('dragover', this.onOver);
-            document.removeEventListener('drop', this.onDrop);
-        },
-    },
-    mounted() {
-        this.initDragDrop();
-    },
 
-    destroyed() {
-        this.removeDragDrop();
-    },
-};
+        destroyed() {
+            this.removeDragDrop();
+        }
+    };
 </script>

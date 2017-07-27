@@ -52,7 +52,7 @@ const dateFormatter = (date, format) => {
         mm: pad2(_minute),
         s: _second,
         ss: pad2(_second),
-        SSS: pad3(_ms),
+        SSS: pad3(_ms)
     };
 
     // format date

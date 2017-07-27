@@ -96,101 +96,101 @@
 </template>
 
 <script>
-import Chart from 'chart.js';
+    import Chart from 'chart.js';
 
-export default {
-    props: {
-        result: {
-            type: Object,
-            required: true,
+    export default {
+        props: {
+            result: {
+                type: Object,
+                required: true
+            },
+            back: {
+                type: Function,
+                required: true
+            }
         },
-        back: {
-            type: Function,
-            required: true,
-        }
-    },
-    methods: {
-        renderChart() {
-            const result = this.result;
-            const labels = result.SpeedIndexChart.map(x => x[0]);
-            const dataSI = result.SpeedIndexChart.map(x => x[1]);
-            const dataPSI = result.PerceptualSpeedIndexChart.map(
-                x => Math.round(x[1] * 100) / 100,
-            );
-            const ctx = this.$refs.canvas.getContext('2d');
-            const chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            steppedLine: true,
-                            label: 'SI',
-                            yAxisID: 'y-si',
-                            data: dataSI,
-                            backgroundColor: 'rgba(231,76,60,.5)',
-                        },
-                        {
-                            steppedLine: true,
-                            label: 'PSI',
-                            yAxisID: 'y-psi',
-                            data: dataPSI,
-                            backgroundColor: 'rgba(52,152,219,.5)',
-                        },
-                    ],
-                },
-                options: {
-                    scales: {
-                        yAxes: [
+        methods: {
+            renderChart() {
+                const result = this.result;
+                const labels = result.SpeedIndexChart.map(x => x[0]);
+                const dataSI = result.SpeedIndexChart.map(x => x[1]);
+                const dataPSI = result.PerceptualSpeedIndexChart.map(
+                    x => Math.round(x[1] * 100) / 100
+                );
+                const ctx = this.$refs.canvas.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
                             {
-                                id: 'y-si',
-                                type: 'linear',
-                                position: 'left',
-                                ticks: {
-                                    min: 0,
-                                    max: 100,
-                                },
+                                steppedLine: true,
+                                label: 'SI',
+                                yAxisID: 'y-si',
+                                data: dataSI,
+                                backgroundColor: 'rgba(231,76,60,.5)'
                             },
                             {
-                                id: 'y-psi',
-                                type: 'linear',
-                                position: 'right',
-                                ticks: {
-                                    min: 0,
-                                    max: 1,
-                                },
-                            },
-                        ],
-                        xAxes: [
-                            {
-                                type: 'time',
-                                time: {
-                                    unit: 'millisecond',
-                                    round: 'true',
-                                    min: 0,
-                                    displayFormats: {
-                                        millisecond: 'x',
-                                        second: 'x',
-                                        minute: 'x',
-                                        hour: 'x',
-                                        day: 'x',
-                                        week: 'x',
-                                        month: 'x',
-                                        quarter: 'x',
-                                        year: 'x',
-                                    },
-                                },
-                            },
-                        ],
+                                steppedLine: true,
+                                label: 'PSI',
+                                yAxisID: 'y-psi',
+                                data: dataPSI,
+                                backgroundColor: 'rgba(52,152,219,.5)'
+                            }
+                        ]
                     },
-                },
-            });
-            return chart;
+                    options: {
+                        scales: {
+                            yAxes: [
+                                {
+                                    id: 'y-si',
+                                    type: 'linear',
+                                    position: 'left',
+                                    ticks: {
+                                        min: 0,
+                                        max: 100
+                                    }
+                                },
+                                {
+                                    id: 'y-psi',
+                                    type: 'linear',
+                                    position: 'right',
+                                    ticks: {
+                                        min: 0,
+                                        max: 1
+                                    }
+                                }
+                            ],
+                            xAxes: [
+                                {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'millisecond',
+                                        round: 'true',
+                                        min: 0,
+                                        displayFormats: {
+                                            millisecond: 'x',
+                                            second: 'x',
+                                            minute: 'x',
+                                            hour: 'x',
+                                            day: 'x',
+                                            week: 'x',
+                                            month: 'x',
+                                            quarter: 'x',
+                                            year: 'x'
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                });
+                return chart;
+            }
         },
-    },
-    mounted() {
-        console.log(this.result);
-        this.renderChart();
-    },
-};
+        mounted() {
+            console.log(this.result);
+            this.renderChart();
+        }
+    };
 </script>

@@ -25,14 +25,13 @@
                 height: 300px;
                 border: 3px dashed #fff;
                 border-radius: 6px;
+                position: relative;
 
-                i {
-                    font-size: 28px;
-                    color: #fff;
-                    width: 200px;
-                    height: 300px;
-                    line-height: 300px;
-                    text-align: center;
+                .icon {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
                 }
             }
 
@@ -92,15 +91,15 @@
                 <h1 class="frame-title">{{frame}}</h1>
                 <img v-if="frames[frame]" :src="'file://' + frames[frame]" />
                 <div v-else class="placeholder">
-                    <i class="el-icon-plus"></i>
+                    <i class="icon">+</i>
                 </div>
             </div>
         </div>
         <div class="controls">
-            <el-button @click="stop">返回重新选择视频</el-button>
-            <el-button type="primary"
+            <button @click="stop">返回重新选择视频</button>
+            <button class="btn-primary"
                 :disabled="!(frames.START && frames.FCP && frames.FMP && frames.END)"
-                @click="startAnalyse">开始分析</el-button>
+                @click="startAnalyse">开始分析</button>
         </div>
         <div class="gallery">
             <ul>
@@ -118,74 +117,74 @@
 
 <script>
     import dateFormatter from './date-formatter.js';
-export default {
-    props: {
-        stop: {
-            type: Function,
-            required: true,
-        },
-        start: {
-            type: Function,
-            required: true,
-        },
-        images: {
-            type: Array,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            frames: {
-                START: null,
-                FCP: null,
-                FMP: null,
-                END: null,
+    export default {
+        props: {
+            stop: {
+                type: Function,
+                required: true
             },
-        };
-    },
-    methods: {
-        drag(event, img) {
-            event.dataTransfer.setData('text/plain', img);
-        },
-        over(event) {
-            event.dataTransfer.dropEffect = 'move';
-        },
-        drop(event, frame) {
-            const img = event.dataTransfer.getData('text');
-            this.frames[frame] = img;
-        },
-
-        startAnalyse() {
-            const frames = [
-                this.frames.START,
-                this.frames.FCP,
-                this.frames.FMP,
-                this.frames.END,
-            ];
-            const isSorted = frames.reduce((l, r) => {
-                if (l === false) return false;
-                if (l >= r) return false;
-                return r;
-            });
-            if (isSorted === false) {
-                alert('图片顺序有误，请重新选择');
-                return;
+            start: {
+                type: Function,
+                required: true
+            },
+            images: {
+                type: Array,
+                required: true
             }
-            this.start(this.frames);
         },
+        data() {
+            return {
+                frames: {
+                    START: null,
+                    FCP: null,
+                    FMP: null,
+                    END: null
+                }
+            };
+        },
+        methods: {
+            drag(event, img) {
+                event.dataTransfer.setData('text/plain', img);
+            },
+            over(event) {
+                event.dataTransfer.dropEffect = 'move';
+            },
+            drop(event, frame) {
+                const img = event.dataTransfer.getData('text');
+                this.frames[frame] = img;
+            },
 
-        _extract_time(frame) {
-            const pattern = /ms_(\d+)\.\w+$/;
-            const matched = pattern.exec(frame);
-            if (!matched || !matched[1]) return null;
-            return Number(matched[1]);
-        },
+            startAnalyse() {
+                const frames = [
+                    this.frames.START,
+                    this.frames.FCP,
+                    this.frames.FMP,
+                    this.frames.END
+                ];
+                const isSorted = frames.reduce((l, r) => {
+                    if (l === false) return false;
+                    if (l >= r) return false;
+                    return r;
+                });
+                if (isSorted === false) {
+                    alert('图片顺序有误，请重新选择');
+                    return;
+                }
+                this.start(this.frames);
+            },
 
-        imgToTime(img) {
-            const ms = this._extract_time(img);
-            const text = dateFormatter(ms, 'mm:ss.SSS');
-            return text;
-        },
-    },
-};
+            _extract_time(frame) {
+                const pattern = /ms_(\d+)\.\w+$/;
+                const matched = pattern.exec(frame);
+                if (!matched || !matched[1]) return null;
+                return Number(matched[1]);
+            },
+
+            imgToTime(img) {
+                const ms = this._extract_time(img);
+                const text = dateFormatter(ms, 'mm:ss.SSS');
+                return text;
+            }
+        }
+    };
 </script>

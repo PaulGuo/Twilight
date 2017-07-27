@@ -73,3 +73,27 @@ body {
     background: #1abc9c;
     color: #fff;
 }
+
+
+/******/
+
+button {
+    border: none;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.4;
+    border-radius: 4px;
+    padding: 10px 15px;
+    transition: border 0.25s linear, color 0.25s linear, background-color 0.25s linear;
+    color: #fff;
+    background-color: #bdc3c7;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
+
+    &.btn-primary {
+        background-color: #3498db;
+    }
+
+    &.btn-small {
+        padding: 5px 10px;
+    }
+}

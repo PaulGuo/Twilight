@@ -14,7 +14,7 @@
     <div class="spinner">
         <v-spinner>
             <div class="spinner-action-group">
-                <el-button @click="stop" size="small">终止</el-button>
+                <button class="btn-small" @click="stop">终止</button>
             </div>
         </v-spinner>
     </div>

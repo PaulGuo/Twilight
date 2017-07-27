@@ -50,7 +50,6 @@
         "chart.js": "2.6.0",
         "concat-stream": "1.6.0",
         "electron-log": "2.2.7",
-        "element-ui": "1.4.0",
         "lodash": "4.17.4",
         "rimraf": "2.6.1",
         "vue": "2.4.2",

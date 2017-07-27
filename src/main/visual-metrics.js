@@ -4,6 +4,7 @@ import os from 'os';
 import { spawn } from 'child_process';
 import { ipcMain } from 'electron';
 import concat from 'concat-stream';
+import rimraf from 'rimraf';
 import logger from './logger.js';
 
 logger.debug("process env: '%j'", process.env);
@@ -86,6 +87,16 @@ class AbstractVirtualMetricsTask {
         this.childProcess = null;
         this.file = videoFile;
         this.tmpdir = genTmpdir(id);
+    }
+
+    cleanup() {
+        rimraf(this.tmpdir, err => {
+            logger.debug(
+                'task "%s" | cleanup | dir: "%s"',
+                this.id,
+                this.tmpdir
+            );
+        });
     }
 
     start() {
@@ -278,6 +289,7 @@ const initVisualMetrics = () => {
                     taskId,
                     err
                 );
+                task.cleanup();
             });
         }
     );
@@ -285,7 +297,10 @@ const initVisualMetrics = () => {
     // stop
     ipcMain.on('main:visual-metrics-extract:stop-analyse', (event, taskId) => {
         const task = taskMap[taskId];
-        if (task) task.stop();
+        if (task) {
+            task.stop();
+            task.cleanup();
+        }
         event.sender.send(
             'renderer:visual-metrics-extract:analyse-stopped',
             taskId
@@ -312,6 +327,7 @@ const initVisualMetrics = () => {
 
             const pTask = task.start();
             pTask.then(result => {
+                task.cleanup();
                 event.sender.send(
                     'renderer:visual-metrics-analyse:analyse-success',
                     taskId,
@@ -319,6 +335,7 @@ const initVisualMetrics = () => {
                 );
             });
             pTask.catch(err => {
+                task.cleanup();
                 event.sender.send(
                     'renderer:visual-metrics-analyse:analyse-failure',
                     taskId,
@@ -331,7 +348,10 @@ const initVisualMetrics = () => {
     // stop
     ipcMain.on('main:visual-metrics-analyse:stop-analyse', (event, taskId) => {
         const task = taskMap[taskId];
-        if (task) task.stop();
+        if (task) {
+            task.stop();
+            task.cleanup();
+        }
         event.sender.send(
             'renderer:visual-metrics-analyse:analyse-stopped',
             taskId

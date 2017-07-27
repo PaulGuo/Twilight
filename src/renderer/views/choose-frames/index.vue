@@ -61,6 +61,7 @@
             goTo(path) {
                 this._cleanup_ipc();
                 this.$state.clear('images');
+                this.$state.clear('result');
                 this.$router.push(path);
             },
 

@@ -4,9 +4,7 @@
         "test": {
             "presets": [
                 ["env", {
-                    "targets": {
-                        "node": 6
-                    }
+                    "targets": "electron"
                 }],
                 "stage-0"
             ]
@@ -14,9 +12,7 @@
         "main": {
             "presets": [
                 ["env", {
-                    "targets": {
-                        "node": 6
-                    }
+                    "targets": "electron"
                 }],
                 "stage-0"
             ]

@@ -3,7 +3,7 @@
 import { app, Menu, BrowserWindow } from 'electron';
 import initMenu from './menu.js';
 import initVisualMetrics from './visual-metrics.js';
-import initState from './state.js';
+import { initState, renewState } from './state.js';
 import logger from './logger.js';
 
 const winURL =
@@ -20,12 +20,13 @@ function createWindow() {
         fullscreenable: false,
         minimizable: false,
         webPreferences: {
-            webSecurity: false
-        }
+            webSecurity: false,
+        },
     });
 
     mainWindow.on('closed', () => {
         mainWindow = null;
+        renewState();
     });
 
     logger.debug('load url: "%s"', winURL);

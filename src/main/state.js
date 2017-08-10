@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
 import { get, set } from 'lodash';
 
-const init = () => {
-    const state = {};
+let state = {};
 
+const initState = () => {
     ipcMain.on('STATE:GET', (event, key) => {
         const value = get(state, key, null);
         event.returnValue = value;
@@ -15,4 +15,8 @@ const init = () => {
     });
 };
 
-export default init;
+const renewState = () => {
+    state = {};
+};
+
+export { initState, renewState };

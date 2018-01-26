@@ -1419,7 +1419,8 @@ def calculate_perceptual_speed_index(progress, directory):
     target_frame = os.path.join(
         dir, "ms_{0:06d}.png".format(progress[x - 1]["time"]))
     ssim_1 = compute_ssim(first_paint_frame, target_frame)
-    per_si = float(progress[1]['time'])
+    per_si = 0 # set start from zero as SI. //dandananddada@2018-01-26.
+    # per_si = float(progress[1]['time'])
     last_ms = progress[1]['time']
     # Full Path of the Target Frame
     logging.debug("Target image for perSI is %s" % target_frame)

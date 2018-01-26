@@ -66,6 +66,9 @@ class Deferred {
 
 const genTmpdir = id => {
     const prefix = path.join(os.tmpdir(), `visualmetrics-`);
+    if (fs.existsSync(prefix)) {
+        fs.rmdirSync(prefix);
+    }
     const dir = fs.mkdtempSync(prefix);
     logger.debug('create tmpdir: "%s"', dir);
     return dir;

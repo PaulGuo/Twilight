@@ -14,7 +14,7 @@
 
 ```bash
 brew install ffmpeg imagemagick
-pip2 install -i https://pypi.tuna.tsinghua.edu.cn/simple Pillow pyssim
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple Pillow pyssim
 ```
 
 ### Usage

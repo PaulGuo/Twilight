@@ -128,7 +128,7 @@ class AbstractVirtualMetricsTask {
             this.id,
             this.args.join(' ')
         );
-        this.childProcess = spawn('python2', this.args, {
+        this.childProcess = spawn('python', this.args, {
             env: spawnEnv
         });
         this.childProcess.stdout.pipe(concat(this._handleStdout.bind(this)));
